@@ -25,6 +25,9 @@ class Palette {
   static const Color background = Color(0xFFF9F9F9);
   static const Color onBackground = Colors.black;
 
+  static const Color error = Colors.redAccent;
+  static const Color onError = Colors.white;
+
   static const Color outline = Colors.grey;
 
   // Light color scheme

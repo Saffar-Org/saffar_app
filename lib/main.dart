@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/palette.dart';
+import 'package:saffar_app/core/router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +18,69 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: Palette.lightColorScheme,
+        scaffoldBackgroundColor: Palette.background,
         fontFamily: 'Nunito',
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: Palette.primary,
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(Nums.roundedCornerRadius),
+              ),
+            ),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: Palette.primary,
+            onPrimary: Palette.onPrimary,
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(Nums.roundedCornerRadius),
+              ),
+            ),
+          ),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(Nums.roundedCornerRadius),
+            ),
+            borderSide: BorderSide(
+              color: Palette.outline,
+              width: 1,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(Nums.roundedCornerRadius),
+            ),
+            borderSide: BorderSide(
+              color: Palette.outline,
+              width: 1,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(Nums.roundedCornerRadius),
+            ),
+            borderSide: BorderSide(
+              color: Palette.primary,
+              width: 2,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(Nums.roundedCornerRadius),
+            ),
+            borderSide: BorderSide(
+              color: Palette.error,
+              width: 1,
+            ),
+          ),
+        ),
         textTheme: const TextTheme(
           headline1: TextStyle(
             fontSize: 96,
@@ -83,7 +147,8 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      onGenerateInitialRoutes: CustomRouter.onGenerateInitialRoutes,
+      onGenerateRoute: CustomRouter.onGenerateRoute,
     );
   }
 }
