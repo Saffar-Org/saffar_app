@@ -1,5 +1,26 @@
 /// Handles validation
-class Validator {
+class ValidatorService {
+  /// Validates if name contains atleast 1 character
+  bool validateName(String name) {
+    return name.isNotEmpty;
+  }
+
+  /// Validates is phone is Numeric and contains 10
+  /// digits
+  bool validatePhone(String phone) {
+    if (phone.length != 10) {
+      return false;
+    }
+
+    final int? phoneInNumeric = int.tryParse(phone);
+
+    if (phoneInNumeric == null) {
+      return false;
+    }
+
+    return true;
+  }
+
   /// Validates email using Regular Expression
   bool validateEmail(String email) {
     // Regular expression pattern for email validation

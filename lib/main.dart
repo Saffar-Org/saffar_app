@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/palette.dart';
 import 'package:saffar_app/core/router.dart';
 
-void main() {
+void main() async {
+  // Loading .env file
+  await dotenv.load(fileName: '.env');
+
   runApp(const MyApp());
 }
 
