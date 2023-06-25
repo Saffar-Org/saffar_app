@@ -30,7 +30,7 @@ class User {
       throw Exception('Model User: User has no token');
     } else if (map['name'] == null || map['name'] == '') {
       throw Exception('Model User: User has no name');
-    } else if (map['phone_number'] == null || map['phone_number'] == '') {
+    } else if (map['phone'] == null || map['phone'] == '') {
       throw Exception('Model User: User has no phone number');
     }
 
@@ -38,7 +38,7 @@ class User {
       id: map['id'],
       token: map['token'],
       name: map['name'],
-      phone: map['phone_number'],
+      phone: map['phone'],
       email: map['email'],
       imageUrl: map['imageUrl'],
       reviews: map['reviews'] != null
@@ -55,8 +55,9 @@ class User {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'token': token,
       'name': name,
-      'phone_number': phone,
+      'phone': phone,
       'email': email,
       'imageUrl': imageUrl,
       'reviews': reviews,

@@ -27,12 +27,12 @@ class AuthRepo {
       }
 
       throw CustomException(
-        errorCode: data['error'],
+        error: data['error'],
         message: data['message'],
       );
     } on DioException catch (e) {
       throw CustomException(
-        errorCode: e.error.toString(),
+        error: e.error.toString(),
         message: e.message,
       );
     }
@@ -43,8 +43,8 @@ class AuthRepo {
     try {
       final Response response = await _dio.post(
         '${Strings.baseApiUrl}/sign_in',
-        queryParameters: {
-          'phone_number': phone,
+        data: {
+          'phone': phone,
           'password': password,
         },
       );
@@ -56,13 +56,13 @@ class AuthRepo {
       }
 
       throw CustomException(
-        errorCode: data['error'],
+        error: data['error'],
         message: data['message'],
       );
     } on DioException catch (e) {
       throw CustomException(
-        errorCode: e.error.toString(),
-        message: e.message,
+        error: e.response?.data['error_code'],
+        message: e.response?.data['message'],
       );
     }
   }

@@ -3,10 +3,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/palette.dart';
 import 'package:saffar_app/core/router.dart';
+import 'package:saffar_app/core/service_locator.dart';
 
 void main() async {
   // Loading .env file
   await dotenv.load(fileName: '.env');
+
+  // Registers services
+  setUpServices();
 
   runApp(const MyApp());
 }
@@ -24,6 +28,13 @@ class MyApp extends StatelessWidget {
         colorScheme: Palette.lightColorScheme,
         scaffoldBackgroundColor: Palette.background,
         fontFamily: 'Nunito',
+        snackBarTheme: const SnackBarThemeData(
+          backgroundColor: Palette.primary,
+          behavior: SnackBarBehavior.floating,
+          contentTextStyle: TextStyle(
+            color: Palette.onPrimary,
+          ),
+        ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             primary: Palette.primary,

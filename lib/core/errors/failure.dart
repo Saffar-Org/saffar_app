@@ -11,7 +11,7 @@ class Failure {
 
   factory Failure.fromCustomException(CustomException e) {
     return Failure(
-      errorCode: e.errorCode,
+      errorCode: e.error,
       message: e.message,
     );
   }

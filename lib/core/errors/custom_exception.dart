@@ -1,9 +1,11 @@
 class CustomException implements Exception {
   const CustomException({
-    this.errorCode,
+    this.error,
     this.message,
   });
 
-  final String? errorCode;
+  /// Error code like (INVALID_PHONE, EMPTY_PARAMS, etc.)
+  final String? error;
+  /// Error message like (Phone number is invalid)
   final String? message;
 }
