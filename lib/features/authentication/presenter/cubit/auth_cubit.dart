@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:saffar_app/core/utils/snackbar.dart';
-import 'package:saffar_app/features/authentication/domain/usecases/sign_in_usecase.dart';
-import 'package:saffar_app/features/authentication/domain/usecases/sign_up_usecase.dart';
+import 'package:saffar_app/features/authentication/domain/usecases/sign_in_and_save_user_info_in_local_storage_usecase.dart';
+import 'package:saffar_app/features/authentication/domain/usecases/sign_up_and_save_user_info_in_local_storage_usecase.dart';
 import 'package:saffar_app/features/authentication/domain/usecases/validate_confirm_password_usecase.dart';
 import 'package:saffar_app/features/authentication/domain/usecases/validate_name_usecase.dart';
 import 'package:saffar_app/features/authentication/domain/usecases/validate_password_usecase.dart';
@@ -19,8 +19,10 @@ class AuthCubit extends Cubit<AuthState> {
       ValidatePasswordUsecase();
   final ValidateConfirmPasswordUsecase _validateConfirmPasswordUsecase =
       ValidateConfirmPasswordUsecase();
-  final SignInUsecase _signInUsecase = SignInUsecase();
-  final SignUpUsecase _signUpUsecase = SignUpUsecase();
+  final SignInAndSaveUserInLocalStorageUsecase
+      _signInAndSaveUserInLocalStorageUsecase =
+      SignInAndSaveUserInLocalStorageUsecase();
+  final SignUpAndSaveUserInLocalStorageUsecase _signUpAndSaveUserInLocalStorageUsecase = SignUpAndSaveUserInLocalStorageUsecase();
 
   /// Validates name
   String? validateName(String? name) {
@@ -46,7 +48,11 @@ class AuthCubit extends Cubit<AuthState> {
   void signIn(BuildContext context, String phone, String password) async {
     emit(const AuthState(loading: true));
 
-    final result = await _signInUsecase.call(phone, password);
+    final result = await _signInAndSaveUserInLocalStorageUsecase.call(
+      context,
+      phone,
+      password,
+    );
 
     result.fold(
       (l) {
@@ -67,7 +73,12 @@ class AuthCubit extends Cubit<AuthState> {
   ) async {
     emit(const AuthState(loading: true));
 
-    final result = await _signUpUsecase.call(name, phone, password);
+    final result = await _signUpAndSaveUserInLocalStorageUsecase.call(
+      context,
+      name,
+      phone,
+      password,
+    );
 
     result.fold(
       (l) {

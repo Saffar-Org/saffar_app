@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:saffar_app/core/service_locator.dart';
 import 'package:saffar_app/main.dart';
 
@@ -8,11 +9,14 @@ import 'package:saffar_app/main.dart';
 void main() async {
   debugPrint('Application running in Development Mode');
 
-  // Loading dev.env file
+  // Loading dev.env file.
   await dotenv.load(fileName: 'dev.env');
 
-  // Registers services
-  setUpServices();
+  // Initializing hive with a temp sub directory.
+  await Hive.initFlutter();
+
+  // Registers services.
+  await setUpServices();
 
   runApp(const MyApp());
 }

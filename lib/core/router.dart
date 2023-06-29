@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saffar_app/features/authentication/presenter/view/sign_in_screen.dart';
+import 'package:saffar_app/wrapper.dart';
 
 import '../features/authentication/presenter/view/sign_up_screen.dart';
 
@@ -9,7 +10,7 @@ class CustomRouter {
   static List<Route<dynamic>> onGenerateInitialRoutes(String name) {
     return [
       MaterialPageRoute(
-        builder: (_) => const SignInScreen(),
+        builder: (_) => const Wrapper(),
       ),
     ];
   }

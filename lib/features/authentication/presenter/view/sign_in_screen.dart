@@ -23,12 +23,29 @@ class _SignInScreenState extends State<SignInScreen> {
 
   late final GlobalKey<FormState> _formKey;
 
+  late final FocusNode _focusNode;
+
   bool _passwordVisible = false;
 
+  /// Switches password visibility from true to false
+  /// and vice versa and [setState]'s it.
   void _switchPasswordVisibility() {
     setState(() {
       _passwordVisible = !_passwordVisible;
     });
+  }
+
+  /// Unfocuses the keyboard, validates the form
+  /// then sign in function in called.
+  void _onSignInButtonPressed() {
+    FocusScope.of(context).unfocus();
+
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      final String phone = _phoneController.text;
+      final String password = _passwordController.text;
+
+      _authCubit.signIn(context, phone, password);
+    }
   }
 
   @override
@@ -41,12 +58,16 @@ class _SignInScreenState extends State<SignInScreen> {
     _passwordController = TextEditingController();
 
     _formKey = GlobalKey<FormState>();
+
+    _focusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _phoneController.dispose();
     _passwordController.dispose();
+
+    _focusNode.dispose();
 
     _authCubit.close();
 
@@ -91,11 +112,15 @@ class _SignInScreenState extends State<SignInScreen> {
 
                         // Phone text form field
                         TextFormField(
+                          autofocus: true,
                           controller: _phoneController,
                           validator: (phone) {
                             return _authCubit.validatePhone(phone);
                           },
                           keyboardType: TextInputType.phone,
+                          onEditingComplete: () {
+                            FocusScope.of(context).nextFocus();
+                          },
                           decoration: InputDecoration(
                             prefixIcon: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -131,12 +156,16 @@ class _SignInScreenState extends State<SignInScreen> {
 
                         // Password text form field
                         TextFormField(
+                          focusNode: _focusNode,
                           controller: _passwordController,
                           validator: (password) {
                             return _authCubit.validatePassword(password);
                           },
                           keyboardType: TextInputType.visiblePassword,
                           obscureText: !_passwordVisible,
+                          onEditingComplete: () {
+                            FocusScope.of(context).unfocus();
+                          },
                           decoration: InputDecoration(
                             hintText: 'Enter Password',
                             hintStyle: TextStyle(
@@ -166,18 +195,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
                         // Sign in button
                         ElevatedButton(
-                          onPressed: state.loading
-                              ? null
-                              : () {
-                                  if (_formKey.currentState != null &&
-                                      _formKey.currentState!.validate()) {
-                                    final String phone = _phoneController.text;
-                                    final String password =
-                                        _passwordController.text;
-
-                                    _authCubit.signIn(context, phone, password);
-                                  }
-                                },
+                          onPressed: state.loading ? null : () {
+                            _onSignInButtonPressed();
+                          },
                           style: ElevatedButton.styleFrom(
                             textStyle: Theme.of(context)
                                 .textTheme

@@ -27,13 +27,13 @@ class AuthRepo {
       }
 
       throw CustomException(
-        error: data['error'],
-        message: data['message'],
+        error: data['error']['code'],
+        message: data['error']['message'],
       );
     } on DioException catch (e) {
       throw CustomException(
-        error: e.response?.data['error_code'],
-        message: e.response?.data['message'],
+        error: e.response?.data['error']['code'],
+        message: e.response?.data['error']['message'],
       );
     }
   }
@@ -56,13 +56,13 @@ class AuthRepo {
       }
 
       throw CustomException(
-        error: data['error'],
-        message: data['message'],
+        error: data['error']['code'],
+        message: data['error']['message'],
       );
     } on DioException catch (e) {
       throw CustomException(
-        error: e.response?.data['error_code'],
-        message: e.response?.data['message'],
+        error: e.response?.data['error']['code'],
+        message: e.response?.data['error']['message'],
       );
     }
   }

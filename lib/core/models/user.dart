@@ -6,7 +6,6 @@ class User {
     required this.phone,
     this.email,
     this.imageUrl,
-    this.reviews = const [],
     this.latitude,
     this.longitude,
     this.rides = const [],
@@ -18,12 +17,11 @@ class User {
   final String phone;
   final String? email;
   final String? imageUrl;
-  final List<dynamic> reviews; // TODO: Change dynamic with Review model
   final double? latitude;
   final double? longitude;
   final List<dynamic> rides; // TODO: Change dynamic with Ride model
 
-  factory User.fromMap(Map<String, dynamic> map) {
+  factory User.fromMap(Map<dynamic, dynamic> map) {
     if (map['id'] == null || map['id'] == '') {
       throw Exception('Model User: User has no id');
     } else if (map['token'] == null || map['token'] == '') {
@@ -41,9 +39,6 @@ class User {
       phone: map['phone'],
       email: map['email'],
       imageUrl: map['imageUrl'],
-      reviews: map['reviews'] != null
-          ? List<dynamic>.from(map['reviews'])
-          : [], // TODO: Change dynamic with Review model
       latitude: map['latitude'],
       longitude: map['longitude'],
       rides: map['rides'] != null
@@ -52,7 +47,7 @@ class User {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<dynamic, dynamic> toMap() {
     return {
       'id': id,
       'token': token,
@@ -60,7 +55,6 @@ class User {
       'phone': phone,
       'email': email,
       'imageUrl': imageUrl,
-      'reviews': reviews,
       'latitude': latitude,
       'longitude': longitude,
       'rides': rides,
