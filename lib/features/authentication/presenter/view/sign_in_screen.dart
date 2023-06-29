@@ -23,7 +23,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   late final GlobalKey<FormState> _formKey;
 
-  late final FocusNode _focusNode;
+  late final List<FocusNode> _focusNodes;
 
   bool _passwordVisible = false;
 
@@ -59,7 +59,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
     _formKey = GlobalKey<FormState>();
 
-    _focusNode = FocusNode();
+    _focusNodes = List.generate(2, (index) => FocusNode());
   }
 
   @override
@@ -67,7 +67,9 @@ class _SignInScreenState extends State<SignInScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
 
-    _focusNode.dispose();
+    for (final focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
 
     _authCubit.close();
 
@@ -118,8 +120,10 @@ class _SignInScreenState extends State<SignInScreen> {
                             return _authCubit.validatePhone(phone);
                           },
                           keyboardType: TextInputType.phone,
+                          focusNode: _focusNodes[0],
                           onEditingComplete: () {
-                            FocusScope.of(context).nextFocus();
+                            _focusNodes[0].unfocus();
+                            _focusNodes[1].requestFocus();
                           },
                           decoration: InputDecoration(
                             prefixIcon: Padding(
@@ -156,15 +160,15 @@ class _SignInScreenState extends State<SignInScreen> {
 
                         // Password text form field
                         TextFormField(
-                          focusNode: _focusNode,
                           controller: _passwordController,
                           validator: (password) {
                             return _authCubit.validatePassword(password);
                           },
                           keyboardType: TextInputType.visiblePassword,
                           obscureText: !_passwordVisible,
+                          focusNode: _focusNodes[1],
                           onEditingComplete: () {
-                            FocusScope.of(context).unfocus();
+                            _focusNodes[1].unfocus();
                           },
                           decoration: InputDecoration(
                             hintText: 'Enter Password',

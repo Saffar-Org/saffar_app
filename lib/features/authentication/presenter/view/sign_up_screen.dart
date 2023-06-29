@@ -25,19 +25,44 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   late final GlobalKey<FormState> _formKey;
 
+  late final List<FocusNode> _focusNodes;
+
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
 
+  /// Switches password visibility from true to false
+  /// and vice versa and [setState]'s it.
   void _switchPasswordVisibility() {
     setState(() {
       _passwordVisible = !_passwordVisible;
     });
   }
 
+  /// Switches confirm password visibility from true to false
+  /// and vice versa and [setState]'s it.
   void _switchConfirmPasswordVisibility() {
     setState(() {
       _confirmPasswordVisible = !_confirmPasswordVisible;
     });
+  }
+
+  /// Unfocuses the keyboard, validates the form
+  /// then sign up function in called.
+  void _onSignUpButtonPressed() {
+    FocusScope.of(context).unfocus();
+
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      final String name = _nameController.text;
+      final String phone = _phoneController.text;
+      final String password = _passwordController.text;
+
+      _authCubit.signUp(
+        context,
+        name,
+        phone,
+        password,
+      );
+    }
   }
 
   @override
@@ -52,6 +77,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _confirmPasswordController = TextEditingController();
 
     _formKey = GlobalKey<FormState>();
+
+    _focusNodes = List.generate(4, (index) => FocusNode());
   }
 
   @override
@@ -60,6 +87,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+
+    for (final focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
 
     _authCubit.close();
 
@@ -109,7 +140,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             validator: (name) {
                               return _authCubit.validateName(name);
                             },
+                            autofocus: true,
                             keyboardType: TextInputType.name,
+                            focusNode: _focusNodes[0],
+                            onEditingComplete: () {
+                              _focusNodes[0].unfocus();
+                              _focusNodes[1].requestFocus();
+                            },
                             decoration: InputDecoration(
                               hintText: 'Enter Name',
                               hintStyle: TextStyle(
@@ -136,6 +173,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               return _authCubit.validatePhone(phone);
                             },
                             keyboardType: TextInputType.phone,
+                            focusNode: _focusNodes[1],
+                            onEditingComplete: () {
+                              _focusNodes[1].unfocus();
+                              _focusNodes[2].requestFocus();
+                            },
                             decoration: InputDecoration(
                               prefixIcon: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -177,6 +219,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             },
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: !_passwordVisible,
+                            focusNode: _focusNodes[2],
+                            onEditingComplete: () {
+                              _focusNodes[2].unfocus();
+                              _focusNodes[3].requestFocus();
+                            },
                             decoration: InputDecoration(
                               hintText: 'Enter Password',
                               hintStyle: TextStyle(
@@ -217,6 +264,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             },
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: !_confirmPasswordVisible,
+                            focusNode: _focusNodes[3],
+                            onEditingComplete: () {
+                              _focusNodes[3].unfocus();
+                            },
                             decoration: InputDecoration(
                               hintText: 'Confirm Password',
                               hintStyle: TextStyle(
@@ -249,21 +300,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             onPressed: state.loading
                                 ? null
                                 : () {
-                                    if (_formKey.currentState != null &&
-                                        _formKey.currentState!.validate()) {
-                                      final String name = _nameController.text;
-                                      final String phone =
-                                          _phoneController.text;
-                                      final String password =
-                                          _passwordController.text;
-
-                                      _authCubit.signUp(
-                                        context,
-                                        name,
-                                        phone,
-                                        password,
-                                      );
-                                    }
+                                    _onSignUpButtonPressed();
                                   },
                             style: ElevatedButton.styleFrom(
                               textStyle: Theme.of(context)
