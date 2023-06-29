@@ -44,12 +44,38 @@ class AuthCubit extends Cubit<AuthState> {
 
   /// Signs in user and shows failure message if sign in fails
   void signIn(BuildContext context, String phone, String password) async {
+    emit(const AuthState(loading: true));
+
     final result = await _signInUsecase.call(phone, password);
 
-    result.fold((l) {
-      Snackbar.of(context).show(l.message ?? 'Failed to Sign In');
-    }, (r) {
-      print(r.toMap());
-    });
+    result.fold(
+      (l) {
+        Snackbar.of(context).show(l.message ?? 'Failed to Sign In');
+      },
+      (r) {},
+    );
+
+    emit(const AuthState());
+  }
+
+  /// Signs up user and shows failure message if sign up fails
+  void signUp(
+    BuildContext context,
+    String name,
+    String phone,
+    String password,
+  ) async {
+    emit(const AuthState(loading: true));
+
+    final result = await _signUpUsecase.call(name, phone, password);
+
+    result.fold(
+      (l) {
+        Snackbar.of(context).show(l.message ?? 'Failed to Sign Up');
+      },
+      (r) {},
+    );
+
+    emit(const AuthState());
   }
 }

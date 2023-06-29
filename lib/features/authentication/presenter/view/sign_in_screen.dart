@@ -97,7 +97,19 @@ class _SignInScreenState extends State<SignInScreen> {
                           },
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
-                            prefixText: '+91',
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 12,
+                              ),
+                              child: Text(
+                                '+91',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                              ),
+                            ),
                             hintText: 'Enter Phone',
                             hintStyle: TextStyle(
                               color: Theme.of(context).colorScheme.outline,

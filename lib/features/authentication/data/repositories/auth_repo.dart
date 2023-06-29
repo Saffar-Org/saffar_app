@@ -13,9 +13,9 @@ class AuthRepo {
     try {
       final Response response = await _dio.post(
         '${Strings.baseApiUrl}/sign_up',
-        queryParameters: {
+        data: {
           'name': name,
-          'phone_number': phone,
+          'phone': phone,
           'password': password,
         },
       );
@@ -32,8 +32,8 @@ class AuthRepo {
       );
     } on DioException catch (e) {
       throw CustomException(
-        error: e.error.toString(),
-        message: e.message,
+        error: e.response?.data['error_code'],
+        message: e.response?.data['message'],
       );
     }
   }
