@@ -57,6 +57,17 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    // Flavors
+    flavorDimensions 'default'
+
+    productFlavors {
+        dev {
+            dimension 'default'
+            resValue 'string', 'saffar_app_dev', 'dev flavor'
+            applicationIdSuffix '.dev'
+        }
+    }
 }
 
 flutter {

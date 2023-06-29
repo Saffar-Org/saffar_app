@@ -14,6 +14,4 @@ void setUpServices() {
 
   // Repos
   sl.registerSingleton<AuthRepo>(AuthRepo());
-
-  // Usecases
 }
