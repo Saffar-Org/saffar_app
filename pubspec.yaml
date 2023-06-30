@@ -57,6 +57,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/fonts/Nunito/
+    - assets/images/
     - .env
     - dev.env
 
