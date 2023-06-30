@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:saffar_app/features/authentication/presenter/cubit/auth_cubit.dart';
+import 'package:saffar_app/features/authentication/presenter/cubits/auth_cubit.dart';
 import 'package:saffar_app/features/authentication/presenter/view/sign_in_screen.dart';
 
 import '../../../../core/constants/nums.dart';
