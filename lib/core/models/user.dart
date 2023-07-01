@@ -1,3 +1,7 @@
+import 'package:saffar_app/core/models/ride.dart';
+import 'package:saffar_app/core/utils/model_helper.dart';
+
+/// User 
 class User {
   const User({
     required this.id,
@@ -19,18 +23,14 @@ class User {
   final String? imageUrl;
   final double? latitude;
   final double? longitude;
-  final List<dynamic> rides; // TODO: Change dynamic with Ride model
+  final List<Ride> rides;
 
   factory User.fromMap(Map<dynamic, dynamic> map) {
-    if (map['id'] == null || map['id'] == '') {
-      throw Exception('Model User: User has no id');
-    } else if (map['token'] == null || map['token'] == '') {
-      throw Exception('Model User: User has no token');
-    } else if (map['name'] == null || map['name'] == '') {
-      throw Exception('Model User: User has no name');
-    } else if (map['phone'] == null || map['phone'] == '') {
-      throw Exception('Model User: User has no phone number');
-    }
+    ModelHelper.throwExceptionIfRequiredFieldsNotPresentInMap(
+      'User',
+      map,
+      ['id', 'token', 'name', 'phone'],
+    );
 
     return User(
       id: map['id'],
@@ -42,8 +42,10 @@ class User {
       latitude: map['latitude'],
       longitude: map['longitude'],
       rides: map['rides'] != null
-          ? List<dynamic>.from(map['rides'])
-          : [], // TODO: Change dynamic with Review model
+          ? (map['rides'] as List<dynamic>)
+              .map((rideMap) => Ride.fromMap(rideMap))
+              .toList()
+          : [],
     );
   }
 
@@ -57,7 +59,7 @@ class User {
       'imageUrl': imageUrl,
       'latitude': latitude,
       'longitude': longitude,
-      'rides': rides,
+      'rides': rides.map((ride) => ride.toMap()).toList(),
     };
   }
 }
