@@ -1,25 +1,26 @@
 import 'package:saffar_app/core/utils/model_helper.dart';
 
 import 'address.dart';
+import 'user.dart';
 
 /// Ride from a taxi from source to destination.
 class Ride {
   const Ride({
     required this.id,
-    required this.userId,
-    required this.driverId,
+    required this.user,
+    required this.driver,
     required this.sourceAddress,
     required this.destinationAddress,
     this.startTime,
     this.endTime,
     required this.cancelled,
     required this.price,
-    this.discountPrice,
+    this.discountPrice, 
   });
 
   final String id;
-  final String userId;
-  final String driverId;
+  final User user;
+  final dynamic driver; // TODO: Change type Driver model
   final Address sourceAddress;
   final Address destinationAddress;
   final DateTime? startTime;
@@ -34,8 +35,8 @@ class Ride {
       map,
       [
         'id',
-        'user_id',
-        'driver_id',
+        'user',
+        'driver',
         'source_address',
         'destination_address',
         'price'
@@ -44,8 +45,8 @@ class Ride {
 
     return Ride(
       id: map['id'] as String,
-      userId: map['user_id'] as String,
-      driverId: map['driver_id'] as String,
+      user: User.fromMap(map['user']),
+      driver: map['driver'], // TODO: Change to Driver.fromMap(map['driver'])
       sourceAddress:
           Address.fromMap(map['source_address'] as Map<dynamic, dynamic>),
       destinationAddress:
@@ -67,8 +68,8 @@ class Ride {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'user_id': userId,
-      'driver_id': driverId,
+      'user': user.toMap(),
+      'driver': driver, // TODO: Change to driver.toMap()
       'source_address': sourceAddress.toMap(),
       'destination_address': destinationAddress.toMap(),
       'start_time': startTime?.toIso8601String(),
