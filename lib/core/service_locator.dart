@@ -17,8 +17,7 @@ Future<void> setUpServices() async {
   sl.registerSingleton<ValidatorService>(ValidatorService());
 
   // ---------- Repos ----------
-  final UserRepo userRepo = await UserRepo.instance;
-  sl.registerSingleton<UserRepo>(userRepo);
+  sl.registerSingleton<UserRepo>(UserRepo());
   sl.registerSingleton<AuthRepo>(AuthRepo());
   sl.registerSingleton<RidesRepo>(RidesRepo());
 }

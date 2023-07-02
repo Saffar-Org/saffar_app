@@ -8,9 +8,19 @@ import '../models/user.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-  /// Getting current user and emitting 
+  /// Getting current user and emitting
   /// the current user.
-  UserCubit() : super(const UserState()) {
+  UserCubit() : super(const UserState());
+
+  final GetUserFromLocalStorageUsecase _getUserFromLocalStorageUsecase =
+      GetUserFromLocalStorageUsecase();
+  final PutUserInLocalStorageUsecase _putUserInLocalStorageUsecase =
+      PutUserInLocalStorageUsecase();
+
+  /// Initialized User Cubit. This must be called once 
+  /// in the application before any of the other functions 
+  /// of [UserCubit] are called.
+  void initUserCubit() {
     final User? currentUser = _getUserFromLocalStorageUsecase.call();
 
     if (currentUser != null) {
@@ -18,11 +28,9 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  final GetUserFromLocalStorageUsecase _getUserFromLocalStorageUsecase = GetUserFromLocalStorageUsecase();
-  final PutUserInLocalStorageUsecase _putUserInLocalStorageUsecase = PutUserInLocalStorageUsecase();
-
-  /// Puts current user info in local storage and emits the current user 
-  Future<void> putCurrentUserInfoInLocalStorageAndEmitCurrentUser(User user) async {
+  /// Puts current user info in local storage and emits the current user
+  Future<void> putCurrentUserInfoInLocalStorageAndEmitCurrentUser(
+      User user) async {
     await _putUserInLocalStorageUsecase.call(user);
     emit(UserState(currentUser: user));
   }

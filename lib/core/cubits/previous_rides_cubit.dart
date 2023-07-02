@@ -16,8 +16,6 @@ class PreviousRidesCubit extends Cubit<PreviousRidesState> {
     _getPreviousRidesUsecase.getListOfPreviousRides().then((result) {
       result.fold(
         (l) {
-          print('Error: ${l.message}');
-
           emit(const PreviousRidesGot());
         },
         (r) {

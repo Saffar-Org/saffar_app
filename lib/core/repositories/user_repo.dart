@@ -3,30 +3,31 @@ import 'package:saffar_app/core/errors/custom_exception.dart';
 import 'package:saffar_app/core/service_locator.dart';
 
 class UserRepo {
-  UserRepo._();
+  final HiveInterface _hive = sl<HiveInterface>();
+  late final Box? _userBox;
 
-  static UserRepo? _instance;
-
-  /// Singleton instance of UserRepo also opening
-  /// 'user_box' once when the app is running.
-  static Future<UserRepo> get instance async {
-    // If [_instance] is null 'user_box' is opened
-    // and _instance is set to constructor of UserRepo.
-    if (_instance == null) {
+  /// Initialize User Repo. This function should be 
+  /// called once in the application before using 
+  /// any of the other functions of [UserRepo]. 
+  /// Preferrably in the Splash Screen.
+  Future<void> initUserRepo() async {
+    try {
       _userBox = await _hive.openBox('user_box');
-      _instance = UserRepo._();
+    } catch (e) {
+      throw CustomException(
+        message: e.toString(),
+      );
     }
-
-    return _instance!;
   }
-
-  static final HiveInterface _hive = sl<HiveInterface>();
-  static late final Box _userBox;
 
   /// Writes user map info to local storage
   Future<void> putUserMapInLocalStorage(Map<dynamic, dynamic> userMap) async {
+    if (_userBox == null) {
+      throw const CustomException(message: 'User box is null.');
+    }
+
     try {
-      await _userBox.put('current_user', userMap);
+      await _userBox!.put('current_user', userMap);
     } catch (e) {
       throw const CustomException(
         message: 'Failed to store user info in local storage.',
@@ -36,8 +37,12 @@ class UserRepo {
 
   /// Reads user map info from local storage
   Map<dynamic, dynamic> getUserMapFromLocalStorage() {
+    if (_userBox == null) {
+      throw const CustomException(message: 'User box is null.');
+    }
+
     try {
-      return _userBox.get('current_user');
+      return _userBox!.get('current_user');
     } catch (e) {
       throw const CustomException(
         message: 'Failed to get user info from local storage.',

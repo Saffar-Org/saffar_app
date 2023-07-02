@@ -6,15 +6,18 @@ import 'package:saffar_app/core/service_locator.dart';
 
 /// Gets rides data
 class RidesRepo {
-  RidesRepo({
-    this.token,
-    this.userId,
-  });
-
   final Dio _dio = sl<Dio>();
 
-  final String? token;
-  final String? userId;
+  late final String? token;
+  late final String? userId;
+
+  /// Initialized Rides Repo. This must be called once
+  /// in the application before the other functions are 
+  /// called. Preferrably in the Splash Screen.
+  void initRidesRepo(String token, String userId) {
+    this.token = token;
+    this.userId = userId;
+  }
 
   /// Gets all the previous rides of the user
   Future<List<Ride>> getPreviousRides() async {
