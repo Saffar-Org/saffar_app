@@ -50,8 +50,10 @@ class AuthCubit extends Cubit<AuthState> {
     return _validateConfirmPasswordUsecase.call(password, confirmPassword);
   }
 
-  /// Signs in user and shows failure message if sign in fails
-  void signIn(BuildContext context, String phone, String password) async {
+  /// Signs in user and gets user and token and emits 
+  /// user and token and 
+  /// shows failure message if sign in fails
+  void signInGetUserAndTokenAndEmitThem(BuildContext context, String phone, String password) async {
     emit(const AuthState(loading: true));
 
     final result = await _signInAndSaveUserInLocalStorageUsecase.call(
@@ -75,8 +77,10 @@ class AuthCubit extends Cubit<AuthState> {
     emit(const AuthState());
   }
 
-  /// Signs up user and shows failure message if sign up fails
-  void signUp(
+  /// Signs up user and gets user and token emits 
+  /// user and token and 
+  /// shows failure message if sign up fails
+  void signUpGetUserAndTokenAndEmitThem(
     BuildContext context,
     String name,
     String phone,

@@ -44,7 +44,7 @@ class _SignInScreenState extends State<SignInScreen> {
       final String phone = _phoneController.text;
       final String password = _passwordController.text;
 
-      _authCubit.signIn(context, phone, password);
+      _authCubit.signInGetUserAndTokenAndEmitThem(context, phone, password);
     }
   }
 

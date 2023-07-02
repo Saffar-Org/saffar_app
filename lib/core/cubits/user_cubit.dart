@@ -2,8 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:saffar_app/core/usecases/get_token_from_local_storage_usecase.dart';
 import 'package:saffar_app/core/usecases/get_user_from_local_storage_usecase.dart';
-import 'package:saffar_app/core/usecases/put_token_in_local_storage_usecase.dart';
-import 'package:saffar_app/core/usecases/put_user_in_local_storage_usercase.dart';
 
 import '../models/user.dart';
 
@@ -18,10 +16,6 @@ class UserCubit extends Cubit<UserState> {
       GetUserFromLocalStorageUsecase();
   final GetTokenFromLocalStorageUsecase _getTokenFromLocalStorageUsecase =
       GetTokenFromLocalStorageUsecase();
-  final PutUserInLocalStorageUsecase _putUserInLocalStorageUsecase =
-      PutUserInLocalStorageUsecase();
-  final PutTokenInLocalStorageUsecase _putTokenInLocalStorageUsecase =
-      PutTokenInLocalStorageUsecase();
 
   /// Emits user and token state with new user and token 
   /// value.

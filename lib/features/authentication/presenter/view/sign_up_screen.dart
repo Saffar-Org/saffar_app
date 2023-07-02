@@ -56,7 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final String phone = _phoneController.text;
       final String password = _passwordController.text;
 
-      _authCubit.signUp(
+      _authCubit.signUpGetUserAndTokenAndEmitThem(
         context,
         name,
         phone,
