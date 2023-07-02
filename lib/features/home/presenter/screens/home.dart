@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/constants/strings.dart';
+import 'package:saffar_app/core/cubits/previous_rides_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -256,99 +258,101 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     const SizedBox(height: 16),
 
-                    // Most recently visited place address.
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: colorScheme.onPrimary,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(
-                            Nums.roundedCornerRadius,
-                          ),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          // Address 1
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.location_on,
-                                color: colorScheme.primary,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Seva Dell',
-                                      style: textTheme.bodyText1?.copyWith(
-                                        fontWeight: FontWeight.bold,
+                    BlocBuilder<PreviousRidesCubit, PreviousRidesState>(
+                      builder: (context, state) {
+                        if (state is PreviousRidesGot) {
+                          // Most recently visited place address.
+                          return state.previousRides.isEmpty
+                              ? const SizedBox()
+                              : Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.onPrimary,
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(
+                                          Nums.roundedCornerRadius,
+                                        ),
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '4455 Landing Lange, APT 4 Louisville, KY 40018-1234',
-                                      style: textTheme.bodyText2,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-
-                          // Divider
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                              child: Divider(
-                                thickness: 2,
-                                color:
-                                    textTheme.bodyText1?.color?.withOpacity(.1),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-
-                          // Address 2
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.location_on,
-                                color: colorScheme.primary,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Seva Dell',
-                                      style: textTheme.bodyText1?.copyWith(
-                                        fontWeight: FontWeight.bold,
+                                    child: Column(
+                                      children: List.generate(
+                                        state.previousRides.length,
+                                        (index) {
+                                          return Column(
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Icon(
+                                                    Icons.location_on,
+                                                    color: colorScheme.primary,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          'Seva Dell',
+                                                          style: textTheme
+                                                              .bodyText1
+                                                              ?.copyWith(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 4),
+                                                        Text(
+                                                          '4455 Landing Lange, APT 4 Louisville, KY 40018-1234',
+                                                          style:
+                                                              textTheme.bodyText2,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              if (index <
+                                                  state.previousRides.length - 1)
+                                                // Divider
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 8,
+                                                  ),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(10),
+                                                    ),
+                                                    child: Divider(
+                                                      thickness: 2,
+                                                      color: textTheme
+                                                          .bodyText1?.color
+                                                          ?.withOpacity(.1),
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          );
+                                        },
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '4455 Landing Lange, APT 4 Louisville, KY 40018-1234',
-                                      style: textTheme.bodyText2,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                                  ),
+                              );
+                        } else if (state is PreviousRidesLoading) {
+                          return const Center(child: Text('Loading'));
+                        } else {
+                          return Center(child: Text('No UI for state: $state'));
+                        }
+                      },
                     ),
-                    const SizedBox(height: 16),
 
                     // Share location poster
                     GestureDetector(
@@ -375,7 +379,8 @@ class HomeScreen extends StatelessWidget {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Want better pickups?',
@@ -389,7 +394,8 @@ class HomeScreen extends StatelessWidget {
                                         children: [
                                           Text(
                                             'Share your location',
-                                            style: textTheme.bodyText2?.copyWith(
+                                            style:
+                                                textTheme.bodyText2?.copyWith(
                                               color: Colors.white,
                                             ),
                                           ),

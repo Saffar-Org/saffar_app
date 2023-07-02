@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:saffar_app/core/constants/nums.dart';
+import 'package:saffar_app/core/cubits/previous_rides_cubit.dart';
 import 'package:saffar_app/core/cubits/user_cubit.dart';
 import 'package:saffar_app/core/palette.dart';
 import 'package:saffar_app/core/router.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => UserCubit()),
+        BlocProvider(create: (_) => PreviousRidesCubit()),
       ],
       child: MaterialApp(
         title: 'Saffar app',

@@ -1,3 +1,5 @@
+import '../errors/custom_exception.dart';
+
 /// Helpers used inside a model.
 class ModelHelper {
   /// Throws [Exception('Model <model name>: <model name> has no <key>')]
@@ -9,7 +11,7 @@ class ModelHelper {
   ) {
     for (final key in keys) {
       if (map[key] == null || map[key] == '') {
-        throw Exception('Model $modelName: $modelName has no $key');
+        throw CustomException(message: 'Model $modelName: $modelName has no $key');
       }
     }
   }

@@ -1,5 +1,6 @@
 import 'package:saffar_app/core/utils/model_helper.dart';
 
+import '../errors/custom_exception.dart';
 import 'address.dart';
 import 'user.dart';
 
@@ -11,11 +12,11 @@ class Ride {
     required this.driver,
     required this.sourceAddress,
     required this.destinationAddress,
-    this.startTime,
+    required this.startTime,
     this.endTime,
     required this.cancelled,
     required this.price,
-    this.discountPrice, 
+    this.discountPrice,
   });
 
   final String id;
@@ -23,7 +24,7 @@ class Ride {
   final dynamic driver; // TODO: Change type Driver model
   final Address sourceAddress;
   final Address destinationAddress;
-  final DateTime? startTime;
+  final DateTime startTime;
   final DateTime? endTime;
   final bool cancelled;
   final double price;
@@ -39,9 +40,16 @@ class Ride {
         'driver',
         'source_address',
         'destination_address',
+        'start_time',
         'price'
       ],
     );
+
+    final DateTime? startTime = DateTime.tryParse(map['start_time'] as String);
+
+    if (startTime == null) {
+      throw const CustomException(message: 'Start time can not be parsed to DateTime.');
+    }
 
     return Ride(
       id: map['id'] as String,
@@ -51,9 +59,7 @@ class Ride {
           Address.fromMap(map['source_address'] as Map<dynamic, dynamic>),
       destinationAddress:
           Address.fromMap(map['destination_address'] as Map<dynamic, dynamic>),
-      startTime: map['start_time'] != null
-          ? DateTime.tryParse(map['start_time'] as String)
-          : null,
+      startTime: startTime,
       endTime: map['end_time'] != null
           ? DateTime.tryParse(map['end_time'] as String)
           : null,
@@ -72,7 +78,7 @@ class Ride {
       'driver': driver, // TODO: Change to driver.toMap()
       'source_address': sourceAddress.toMap(),
       'destination_address': destinationAddress.toMap(),
-      'start_time': startTime?.toIso8601String(),
+      'start_time': startTime.toIso8601String(),
       'end_time': endTime?.toIso8601String(),
       'cancelled': cancelled,
       'price': price,

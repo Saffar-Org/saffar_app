@@ -12,7 +12,7 @@ class AuthRepo {
   Future<User> signUp(String name, String phone, String password) async {
     try {
       final Response response = await _dio.post(
-        '${Strings.baseApiUrl}/sign_up',
+        '${Strings.baseApiUrl}/auth/sign_up',
         data: {
           'name': name,
           'phone': phone,
@@ -27,12 +27,12 @@ class AuthRepo {
       }
 
       throw CustomException(
-        error: data['error']['code'],
+        code: data['error']['code'],
         message: data['error']['message'],
       );
     } on DioException catch (e) {
       throw CustomException(
-        error: e.response?.data['error']['code'],
+        code: e.response?.data['error']['code'],
         message: e.response?.data['error']['message'],
       );
     }
@@ -42,7 +42,7 @@ class AuthRepo {
   Future<User> signIn(String phone, String password) async {
     try {
       final Response response = await _dio.post(
-        '${Strings.baseApiUrl}/sign_in',
+        '${Strings.baseApiUrl}/auth/sign_in',
         data: {
           'phone': phone,
           'password': password,
@@ -56,12 +56,12 @@ class AuthRepo {
       }
 
       throw CustomException(
-        error: data['error']['code'],
+        code: data['error']['code'],
         message: data['error']['message'],
       );
     } on DioException catch (e) {
       throw CustomException(
-        error: e.response?.data['error']['code'],
+        code: e.response?.data['error']['code'],
         message: e.response?.data['error']['message'],
       );
     }
