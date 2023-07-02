@@ -23,6 +23,15 @@ class UserCubit extends Cubit<UserState> {
   final PutTokenInLocalStorageUsecase _putTokenInLocalStorageUsecase =
       PutTokenInLocalStorageUsecase();
 
+  /// Emits user and token state with new user and token 
+  /// value.
+  void emitUserAndToken(User user, String token) {
+    emit(UserState(
+      currentUser: user,
+      token: token,
+    ));
+  }
+
   /// Gets current user info from local storage and emits the current user.
   void getCurrentUserFromLocalStorageAndEmitCurrentUser() {
     final User? currentUser = _getUserFromLocalStorageUsecase.call();
@@ -30,20 +39,6 @@ class UserCubit extends Cubit<UserState> {
 
     emit(UserState(
       currentUser: currentUser,
-      token: token,
-    ));
-  }
-
-  /// Puts current user info in local storage and emits the current user
-  Future<void> putCurrentUserInLocalStorageAndEmitCurrentUser(
-    User user,
-    String token,
-  ) async {
-    await _putUserInLocalStorageUsecase.call(user);
-    await _putTokenInLocalStorageUsecase.call(token);
-
-    emit(UserState(
-      currentUser: user,
       token: token,
     ));
   }
