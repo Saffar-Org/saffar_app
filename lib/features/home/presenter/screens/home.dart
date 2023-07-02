@@ -4,6 +4,8 @@ import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/cubits/previous_rides_cubit.dart';
 import 'package:saffar_app/core/cubits/user_cubit.dart';
+import 'package:saffar_app/core/models/address.dart';
+import 'package:saffar_app/core/utils/view_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -282,7 +284,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context, state) {
                         if (state is PreviousRidesGot) {
                           // Most recently visited place address.
-                          return state.previousRides.isEmpty
+                          return state.latestTwoPreviousRidesWithoutCancellation
+                                  .isEmpty
                               ? const SizedBox()
                               : Padding(
                                   padding: const EdgeInsets.only(bottom: 16),
@@ -298,8 +301,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     child: Column(
                                       children: List.generate(
-                                        state.previousRides.length,
+                                        state
+                                            .latestTwoPreviousRidesWithoutCancellation
+                                            .length,
                                         (index) {
+                                          final Address address = state
+                                              .latestTwoPreviousRidesWithoutCancellation[
+                                                  index]
+                                              .destinationAddress;
+
                                           return Column(
                                             children: [
                                               Row(
@@ -318,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               .start,
                                                       children: [
                                                         Text(
-                                                          'Seva Dell',
+                                                          ViewHelper.getAddressPlace(address),
                                                           style: textTheme
                                                               .bodyText1
                                                               ?.copyWith(
@@ -329,7 +339,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         const SizedBox(
                                                             height: 4),
                                                         Text(
-                                                          '4455 Landing Lange, APT 4 Louisville, KY 40018-1234',
+                                                          ViewHelper.getAddressWithoutPlace(address),
                                                           style: textTheme
                                                               .bodyText2,
                                                         ),
@@ -339,7 +349,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ],
                                               ),
                                               if (index <
-                                                  state.previousRides.length -
+                                                  state.latestTwoPreviousRidesWithoutCancellation
+                                                          .length -
                                                       1)
                                                 // Divider
                                                 Padding(
