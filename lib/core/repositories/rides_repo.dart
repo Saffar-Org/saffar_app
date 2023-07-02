@@ -12,7 +12,7 @@ class RidesRepo {
   late final String? userId;
 
   /// Initialized Rides Repo. This must be called once
-  /// in the application before the other functions are 
+  /// in the application before the other functions are
   /// called. Preferrably in the Splash Screen.
   void initRidesRepo(String token, String userId) {
     this.token = token;
@@ -45,7 +45,10 @@ class RidesRepo {
         );
       }
 
-      final List maps = response.data as List;
+      final List<Map<String, dynamic>> maps =
+          (response.data['previous_rides'] as List)
+              .map((e) => e as Map<String, dynamic>)
+              .toList();
 
       return maps.map((map) => Ride.fromMap(map)).toList();
     } on DioException catch (e) {

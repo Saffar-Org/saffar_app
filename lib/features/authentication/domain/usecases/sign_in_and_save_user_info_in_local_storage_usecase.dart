@@ -19,9 +19,17 @@ class SignInAndSaveUserInLocalStorageUsecase {
     String password,
   ) async {
     try {
-      final User user = await _authRepo.signIn(phone, password);
+      final Map<String, dynamic> data = await _authRepo.signIn(phone, password);
 
-      await context.read<UserCubit>().putCurrentUserInfoInLocalStorageAndEmitCurrentUser(user);
+      final User user = data['user'];
+      final String token = data['token'];
+
+      await context
+          .read<UserCubit>()
+          .putCurrentUserInLocalStorageAndEmitCurrentUser(
+            user,
+            token,
+          );
 
       return Right(user);
     } on CustomException catch (e) {

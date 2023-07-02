@@ -13,7 +13,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<UserCubit, UserState>(
       builder: (context, state) {
-        return state.currentUser != null
+        return state.isLoggedIn
             ? const HomeScreen()
             : const SignInScreen();
       },

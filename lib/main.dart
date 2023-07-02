@@ -8,6 +8,7 @@ import 'package:saffar_app/core/cubits/user_cubit.dart';
 import 'package:saffar_app/core/palette.dart';
 import 'package:saffar_app/core/router.dart';
 import 'package:saffar_app/core/service_locator.dart';
+import 'package:saffar_app/features/splash/presenter/cubits/splash_cubit.dart';
 
 void main() async {
   // Loading .env file
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => SplashCubit()),
         BlocProvider(create: (_) => UserCubit()),
         BlocProvider(create: (_) => PreviousRidesCubit()),
       ],

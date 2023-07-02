@@ -35,6 +35,21 @@ class UserRepo {
     }
   }
 
+  /// Writes token to local storage
+  Future<void> putTokenInLocalStorage(String token) async {
+    if (_userBox == null) {
+      throw const CustomException(message: 'User box is null.');
+    }
+
+    try {
+      await _userBox!.put('token', token);
+    } catch (e) {
+      throw const CustomException(
+        message: 'Failed to store token in local storage.',
+      );
+    }
+  }
+
   /// Reads user map info from local storage
   Map<dynamic, dynamic> getUserMapFromLocalStorage() {
     if (_userBox == null) {
@@ -46,6 +61,21 @@ class UserRepo {
     } catch (e) {
       throw const CustomException(
         message: 'Failed to get user info from local storage.',
+      );
+    }
+  }
+
+  /// Reads token from local storage
+  String getTokenFromLocalStorage() {
+    if (_userBox == null) {
+      throw const CustomException(message: 'User box is null.');
+    }
+
+    try {
+      return _userBox!.get('token');
+    } catch (e) {
+      throw const CustomException(
+        message: 'Failed to get token from local storage.',
       );
     }
   }

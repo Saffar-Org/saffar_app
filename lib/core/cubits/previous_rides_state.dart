@@ -10,12 +10,12 @@ class PreviousRidesGot extends PreviousRidesState {
   const PreviousRidesGot({
     this.previousRides = const [],
     this.previousRidesWithoutCancellation = const [],
-    this.latestTwoPreviousRides = const [],
+    this.latestTwoPreviousRidesWithoutCancellation = const [],
   });
 
   final List<Ride> previousRides;
   final List<Ride> previousRidesWithoutCancellation;
-  final List<Ride> latestTwoPreviousRides;
+  final List<Ride> latestTwoPreviousRidesWithoutCancellation;
 }
 
 /// Holds the state of loading

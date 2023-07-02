@@ -1,6 +1,5 @@
 import 'package:saffar_app/core/utils/model_helper.dart';
 
-import '../errors/custom_exception.dart';
 import 'address.dart';
 import 'user.dart';
 
@@ -30,7 +29,7 @@ class Ride {
   final double price;
   final double? discountPrice;
 
-  factory Ride.fromMap(Map<dynamic, dynamic> map) {
+  factory Ride.fromMap(Map<String, dynamic> map) {
     ModelHelper.throwExceptionIfRequiredFieldsNotPresentInMap(
       'Ride',
       map,
@@ -48,7 +47,7 @@ class Ride {
     final DateTime? startTime = DateTime.tryParse(map['start_time'] as String);
 
     if (startTime == null) {
-      throw const CustomException(message: 'Start time can not be parsed to DateTime.');
+      throw Exception('Start time can not be parsed to DateTime.');
     }
 
     return Ride(

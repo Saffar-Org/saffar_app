@@ -21,11 +21,14 @@ class SignUpAndSaveUserInLocalStorageUsecase {
     String password,
   ) async {
     try {
-      final User user = await _authRepo.signUp(name, phone, password);
+      final Map<String, dynamic> data = await _authRepo.signUp(name, phone, password);
+
+      final User user = data['user'];
+      final String token = data['token'];
 
       context
           .read<UserCubit>()
-          .putCurrentUserInfoInLocalStorageAndEmitCurrentUser(user);
+          .putCurrentUserInLocalStorageAndEmitCurrentUser(user, token);
 
       return Right(user);
     } on CustomException catch (e) {

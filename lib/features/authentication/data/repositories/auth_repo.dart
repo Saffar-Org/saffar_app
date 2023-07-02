@@ -8,8 +8,13 @@ import 'package:saffar_app/core/service_locator.dart';
 class AuthRepo {
   final Dio _dio = sl<Dio>();
 
-  /// Signs up user and returns a User model
-  Future<User> signUp(String name, String phone, String password) async {
+  /// Signs up user and returns a User model and token.
+  /// {user: user_mode, token: token}
+  Future<Map<String, dynamic>> signUp(
+    String name,
+    String phone,
+    String password,
+  ) async {
     try {
       final Response response = await _dio.post(
         '${Strings.baseApiUrl}/auth/sign_up',
@@ -23,7 +28,10 @@ class AuthRepo {
       final Map<String, dynamic> data = response.data as Map<String, dynamic>;
 
       if (response.statusCode == 200) {
-        return User.fromMap(data['user']);
+        return {
+          'user': User.fromMap(data['user']),
+          'token': data['token'],
+        };
       }
 
       throw CustomException(
@@ -38,8 +46,9 @@ class AuthRepo {
     }
   }
 
-  /// Signs in user and returns a User model
-  Future<User> signIn(String phone, String password) async {
+  /// Signs in user and returns a User model and Token as
+  /// {user: user_mode, token: token}
+  Future<Map<String, dynamic>> signIn(String phone, String password) async {
     try {
       final Response response = await _dio.post(
         '${Strings.baseApiUrl}/auth/sign_in',
@@ -52,7 +61,10 @@ class AuthRepo {
       final Map<String, dynamic> data = response.data as Map<String, dynamic>;
 
       if (response.statusCode == 200) {
-        return User.fromMap(data['user']);
+        return {
+          'user': User.fromMap(data['user']),
+          'token': data['token'],
+        };
       }
 
       throw CustomException(

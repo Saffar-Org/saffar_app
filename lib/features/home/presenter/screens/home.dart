@@ -3,9 +3,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/cubits/previous_rides_cubit.dart';
+import 'package:saffar_app/core/cubits/user_cubit.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    final UserState userState = context.read<UserCubit>().state;
+
+    if (userState.currentUser != null && userState.token != null) {
+      final String token = userState.token!;
+      final String userId = userState.currentUser!.id;
+
+      context.read<PreviousRidesCubit>().init(token, userId);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -265,8 +285,8 @@ class HomeScreen extends StatelessWidget {
                           return state.previousRides.isEmpty
                               ? const SizedBox()
                               : Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Container(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: Container(
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
                                       color: colorScheme.onPrimary,
@@ -306,11 +326,12 @@ class HomeScreen extends StatelessWidget {
                                                                 FontWeight.bold,
                                                           ),
                                                         ),
-                                                        const SizedBox(height: 4),
+                                                        const SizedBox(
+                                                            height: 4),
                                                         Text(
                                                           '4455 Landing Lange, APT 4 Louisville, KY 40018-1234',
-                                                          style:
-                                                              textTheme.bodyText2,
+                                                          style: textTheme
+                                                              .bodyText2,
                                                         ),
                                                       ],
                                                     ),
@@ -318,11 +339,12 @@ class HomeScreen extends StatelessWidget {
                                                 ],
                                               ),
                                               if (index <
-                                                  state.previousRides.length - 1)
+                                                  state.previousRides.length -
+                                                      1)
                                                 // Divider
                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
                                                     horizontal: 16,
                                                     vertical: 8,
                                                   ),
@@ -345,7 +367,7 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                              );
+                                );
                         } else if (state is PreviousRidesLoading) {
                           return const Center(child: Text('Loading'));
                         } else {

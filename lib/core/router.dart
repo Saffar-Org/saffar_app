@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saffar_app/features/authentication/presenter/view/sign_in_screen.dart';
-import 'package:saffar_app/wrapper.dart';
+import 'package:saffar_app/features/splash/presenter/screens/splash_screen.dart';
 
 import '../features/authentication/presenter/view/sign_up_screen.dart';
 
@@ -10,7 +10,7 @@ class CustomRouter {
   static List<Route<dynamic>> onGenerateInitialRoutes(String name) {
     return [
       MaterialPageRoute(
-        builder: (_) => const Wrapper(),
+        builder: (_) => const SplashScreen(),
       ),
     ];
   }
@@ -18,6 +18,10 @@ class CustomRouter {
   /// Generates routes for named navigation
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case SplashScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => const SplashScreen(),
+        );
       case SignInScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => const SignInScreen(),
