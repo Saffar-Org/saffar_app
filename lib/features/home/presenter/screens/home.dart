@@ -6,6 +6,7 @@ import 'package:saffar_app/core/cubits/previous_rides_cubit.dart';
 import 'package:saffar_app/core/cubits/user_cubit.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/utils/view_helper.dart';
+import 'package:saffar_app/features/view_map/presenter/screens/view_map_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -116,9 +117,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Where do you want to go Container
+                // Where do you want to go Container Button
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      ViewMapScreen.routeName,
+                    );
+                  },
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -328,7 +334,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               .start,
                                                       children: [
                                                         Text(
-                                                          ViewHelper.getAddressPlace(address),
+                                                          ViewHelper
+                                                              .getAddressPlace(
+                                                                  address),
                                                           style: textTheme
                                                               .bodyText1
                                                               ?.copyWith(
@@ -339,7 +347,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         const SizedBox(
                                                             height: 4),
                                                         Text(
-                                                          ViewHelper.getAddressWithoutPlace(address),
+                                                          ViewHelper
+                                                              .getAddressWithoutPlace(
+                                                                  address),
                                                           style: textTheme
                                                               .bodyText2,
                                                         ),
