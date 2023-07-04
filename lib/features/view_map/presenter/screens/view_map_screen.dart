@@ -28,9 +28,6 @@ class _ViewMapScreenState extends State<ViewMapScreen> {
           TileLayerOptions(
             urlTemplate:
                 "https://api.tomtom.com/map/1/tile/basic/night/{z}/{x}/{y}.png?key=$_mapApiKey",
-            errorTileCallback: (tile, error) {
-              print('Error: $tile');
-            }
           ),
           MarkerLayerOptions(
             markers: [
