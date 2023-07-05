@@ -5,7 +5,7 @@ import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/cubits/previous_rides_cubit.dart';
 import 'package:saffar_app/core/cubits/user_cubit.dart';
 import 'package:saffar_app/core/models/address.dart';
-import 'package:saffar_app/core/utils/view_helper.dart';
+import 'package:saffar_app/core/widgets/address_widget.dart';
 import 'package:saffar_app/features/view_map/presenter/screens/view_map_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -316,73 +316,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   index]
                                               .destinationAddress;
 
-                                          return Column(
-                                            children: [
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Icon(
-                                                    Icons.location_on,
-                                                    color: colorScheme.primary,
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          ViewHelper
-                                                              .getAddressPlace(
-                                                                  address),
-                                                          style: textTheme
-                                                              .bodyText1
-                                                              ?.copyWith(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 4),
-                                                        Text(
-                                                          ViewHelper
-                                                              .getAddressWithoutPlace(
-                                                                  address),
-                                                          style: textTheme
-                                                              .bodyText2,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              if (index <
-                                                  state.latestTwoPreviousRidesWithoutCancellation
-                                                          .length -
-                                                      1)
-                                                // Divider
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 16,
-                                                    vertical: 8,
-                                                  ),
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                      Radius.circular(10),
-                                                    ),
-                                                    child: Divider(
-                                                      thickness: 2,
-                                                      color: textTheme
-                                                          .bodyText1?.color
-                                                          ?.withOpacity(.1),
-                                                    ),
-                                                  ),
-                                                ),
-                                            ],
+                                          return AddressWidget(
+                                            address: address,
+                                            showDivider: index !=
+                                                state.latestTwoPreviousRidesWithoutCancellation
+                                                        .length -
+                                                    1,
                                           );
                                         },
                                       ),

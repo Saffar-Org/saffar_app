@@ -149,8 +149,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             },
                             decoration: InputDecoration(
                               hintText: 'Enter Name',
-                              hintStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.outline),
                               border:
                                   Theme.of(context).inputDecorationTheme.border,
                               enabledBorder: Theme.of(context)
@@ -194,8 +192,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                               hintText: 'Enter Phone',
-                              hintStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.outline),
                               border:
                                   Theme.of(context).inputDecorationTheme.border,
                               enabledBorder: Theme.of(context)
@@ -226,8 +222,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             },
                             decoration: InputDecoration(
                               hintText: 'Enter Password',
-                              hintStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.outline),
                               border:
                                   Theme.of(context).inputDecorationTheme.border,
                               enabledBorder: Theme.of(context)
@@ -270,8 +264,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             },
                             decoration: InputDecoration(
                               hintText: 'Confirm Password',
-                              hintStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.outline),
                               border:
                                   Theme.of(context).inputDecorationTheme.border,
                               enabledBorder: Theme.of(context)

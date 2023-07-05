@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -11,6 +12,13 @@ import 'package:saffar_app/core/service_locator.dart';
 import 'package:saffar_app/features/splash/presenter/cubits/splash_cubit.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Locking app in portrait mode
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   // Loading .env file
   await dotenv.load(fileName: '.env');
 
@@ -42,6 +50,7 @@ class MyApp extends StatelessWidget {
           colorScheme: Palette.lightColorScheme,
           scaffoldBackgroundColor: Palette.background,
           fontFamily: 'Nunito',
+          hintColor: Palette.outline,
           snackBarTheme: const SnackBarThemeData(
             backgroundColor: Palette.primary,
             behavior: SnackBarBehavior.floating,

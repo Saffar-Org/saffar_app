@@ -140,9 +140,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                             ),
                             hintText: 'Enter Phone',
-                            hintStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
                             border:
                                 Theme.of(context).inputDecorationTheme.border,
                             enabledBorder: Theme.of(context)
@@ -172,8 +169,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           },
                           decoration: InputDecoration(
                             hintText: 'Enter Password',
-                            hintStyle: TextStyle(
-                                color: Theme.of(context).colorScheme.outline),
                             border:
                                 Theme.of(context).inputDecorationTheme.border,
                             enabledBorder: Theme.of(context)
