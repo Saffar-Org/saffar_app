@@ -7,8 +7,8 @@ class Address {
     required this.id,
     this.place,
     required this.street,
-    required this.state,
-    required this.country,
+    this.state,
+    this.country,
     required this.latLng,
     this.pincode,
   });
@@ -16,8 +16,8 @@ class Address {
   final String id;
   final String? place;
   final String street;
-  final String state;
-  final String country;
+  final String? state;
+  final String? country;
   final LatLng latLng;
   final String? pincode;
 
@@ -71,16 +71,6 @@ class Address {
 
     ModelHelper.throwExceptionIfRequiredFieldsNotPresentInMap(
       'Address',
-      map['address'],
-      [
-        'streetName',
-        'countrySubdivision',
-        'country',
-      ],
-    );
-
-    ModelHelper.throwExceptionIfRequiredFieldsNotPresentInMap(
-      'Address',
       map['position'],
       [
         'lat',
@@ -98,9 +88,11 @@ class Address {
     return Address(
       id: map['id'].toString(),
       place: map['address']['localName']?.toString(),
-      street: map['address']['streetName'].toString(),
+      street: map['address']['streetName'] != null
+          ? map['address']['streetName'].toString()
+          : 'Unnamed Road',
       state: map['address']['countrySubdivision'].toString(),
-      country: map['address']['country'].toString(),
+      country: map['address']['country']?.toString(),
       latLng: LatLng(lat, lon),
       pincode: map['address']['postalCode']?.toString(),
     );

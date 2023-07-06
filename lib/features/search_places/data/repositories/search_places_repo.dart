@@ -15,7 +15,7 @@ class SearchPlacesRepo {
   }) async {
     try {
       final String encodedSearchText = Uri.encodeComponent(searchText);
-
+      
       final Response response = await _dio.get(
           'https://api.tomtom.com/search/2/search/$encodedSearchText.json?key=${Strings.mapApiKey}&ofs=$page&limit=10');
 
@@ -29,10 +29,14 @@ class SearchPlacesRepo {
           maps.map((map) => Address.fromPlacesApiResponseMap(map)).toList();
 
       return addresses;
-    } catch (e) {
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 429) {
+        throw const CustomException(code: 'TOO_MANY_QUERIES_PER_SECOND');
+      }
+
       throw const CustomException(
         message: 'Error in fetching Address list with query',
       );
-    }
+    } 
   }
 }

@@ -5,6 +5,7 @@ import 'package:saffar_app/core/repositories/rides_repo.dart';
 import 'package:saffar_app/core/repositories/user_repo.dart';
 import 'package:saffar_app/core/services/validator_service.dart';
 import 'package:saffar_app/features/authentication/data/repositories/auth_repo.dart';
+import 'package:saffar_app/features/search_places/data/repositories/search_places_repo.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -20,4 +21,5 @@ Future<void> setUpServices() async {
   sl.registerSingleton<UserRepo>(UserRepo());
   sl.registerSingleton<AuthRepo>(AuthRepo());
   sl.registerSingleton<RidesRepo>(RidesRepo());
+  sl.registerSingleton<SearchPlacesRepo>(SearchPlacesRepo());
 }

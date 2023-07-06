@@ -3,7 +3,20 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/nums.dart';
 
 class InputPickupAndDestinationLocationWidget extends StatefulWidget {
-  const InputPickupAndDestinationLocationWidget({Key? key}) : super(key: key);
+  const InputPickupAndDestinationLocationWidget({
+    Key? key,
+    required this.pickupTextEditingController,
+    required this.destinationTextEditingController,
+    required this.pickupFocusNode,
+    required this.destinationFocusNode,
+    this.onDonePressed,
+  }) : super(key: key);
+
+  final TextEditingController pickupTextEditingController;
+  final TextEditingController destinationTextEditingController;
+  final FocusNode pickupFocusNode;
+  final FocusNode destinationFocusNode;
+  final Function()? onDonePressed;
 
   @override
   State<InputPickupAndDestinationLocationWidget> createState() =>
@@ -12,22 +25,26 @@ class InputPickupAndDestinationLocationWidget extends StatefulWidget {
 
 class _InputPickupAndDestinationLocationWidgetState
     extends State<InputPickupAndDestinationLocationWidget> {
-  late final List<FocusNode> _focusNodes;
+  bool _showDeleteTextButtonInPickupTextField = false;
+  bool _showDeleteTextButtonInDestinationTextField = false;
 
   @override
   void initState() {
     super.initState();
 
-    _focusNodes = List.generate(2, (index) => FocusNode());
-  }
+    widget.pickupTextEditingController.addListener(() {
+      setState(() {
+        _showDeleteTextButtonInPickupTextField =
+            widget.pickupTextEditingController.text.isNotEmpty;
+      });
+    });
 
-  @override
-  void dispose() {
-    for (final focusNode in _focusNodes) {
-      focusNode.dispose();
-    }
-
-    super.dispose();
+    widget.destinationTextEditingController.addListener(() {
+      setState(() {
+        _showDeleteTextButtonInDestinationTextField =
+            widget.destinationTextEditingController.text.isNotEmpty;
+      });
+    });
   }
 
   @override
@@ -115,32 +132,49 @@ class _InputPickupAndDestinationLocationWidgetState
                     children: [
                       // Pickup location textfield
                       TextField(
-                        focusNode: _focusNodes[0],
+                        controller: widget.pickupTextEditingController,
+                        focusNode: widget.pickupFocusNode,
                         autofocus: true,
-                        onEditingComplete: () {
-                          _focusNodes[0].unfocus();
-                          _focusNodes[1].requestFocus();
-                        },
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: 'Pickup location',
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             horizontal: 12,
                           ),
+                          suffixIcon: _showDeleteTextButtonInPickupTextField
+                              ? InkWell(
+                                  onTap: () {
+                                    widget.destinationFocusNode.unfocus();
+                                    widget.pickupFocusNode.requestFocus();
+                                    widget.pickupTextEditingController.clear();
+                                  },
+                                  child: const Icon(Icons.cancel),
+                                )
+                              : null,
                         ),
                       ),
                       const SizedBox(height: 12),
 
                       // Destination location textfield
                       TextField(
-                        focusNode: _focusNodes[1],
-                        onEditingComplete: () {
-                          _focusNodes[1].unfocus();
-                        },
-                        decoration: const InputDecoration(
+                        controller: widget.destinationTextEditingController,
+                        focusNode: widget.destinationFocusNode,
+                        decoration: InputDecoration(
                           hintText: 'Destination location',
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             horizontal: 12,
                           ),
+                          suffixIcon:
+                              _showDeleteTextButtonInDestinationTextField
+                                  ? InkWell(
+                                      onTap: () {
+                                        widget.pickupFocusNode.unfocus();
+                                        widget.destinationFocusNode.requestFocus();
+                                        widget.destinationTextEditingController
+                                            .clear();
+                                      },
+                                      child: const Icon(Icons.cancel),
+                                    )
+                                  : null,
                         ),
                       ),
                     ],
@@ -159,8 +193,9 @@ class _InputPickupAndDestinationLocationWidgetState
               left: 40,
             ),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: widget.onDonePressed == null ? null : () {
                 FocusScope.of(context).unfocus();
+                widget.onDonePressed!();
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
