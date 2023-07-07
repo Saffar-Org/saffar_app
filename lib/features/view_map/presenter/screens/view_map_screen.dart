@@ -22,9 +22,6 @@ class ViewMapScreen extends StatefulWidget {
 
 class _ViewMapScreenState extends State<ViewMapScreen>
     with TickerProviderStateMixin {
-  LatLng? _pickupLatLng;
-  LatLng? _destinationLatLng;
-
   late final AnimationController _topSectionAnimationController;
   late final AnimationController _bottomSectionAnimationController;
 
@@ -38,25 +35,41 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
   late final SearchedPlacesCubit _searchedPlacesCubit;
 
+  Address? _pickupAddress;
+  Address? _destinationAddress;
+
   bool _showUpButton = false;
+  bool _addressFromMap = false;
+  bool _showRoute = false;
 
   void _onShowUpButtonPressed() {
     _topSectionAnimationController.reverse();
     _bottomSectionAnimationController.reverse();
+
+    _showRoute = false;
+
+    setState(() {});
   }
 
   void _onDonePressed() {
     _topSectionAnimationController.forward();
     _bottomSectionAnimationController.forward();
 
-    if (_pickupLatLng != null && _destinationLatLng != null) {
-      _mapController.centerZoomFitBounds(
+    if (_pickupAddress != null && _destinationAddress != null) {
+      final CenterZoom newCenterZoom = _mapController.centerZoomFitBounds(
         LatLngBounds(
-          _pickupLatLng!,
-          _destinationLatLng!,
+          _pickupAddress!.latLng,
+          _destinationAddress!.latLng,
         ),
       );
+
+      _mapController.move(
+        newCenterZoom.center,
+        newCenterZoom.zoom - .2,
+      );
     }
+
+    _showRoute = true;
 
     setState(() {});
   }
@@ -65,21 +78,24 @@ class _ViewMapScreenState extends State<ViewMapScreen>
     if (_pickupFocusNode.hasFocus) {
       _pickupTextEditingController.text = ViewHelper.getAddress(address);
 
-      _pickupLatLng = address.latLng;
+      _pickupAddress = address;
 
-      _mapController.move(_pickupLatLng!, 13);
+      _mapController.move(address.latLng, 13);
 
       _pickupFocusNode.unfocus();
       _destinationFocusNode.requestFocus();
     } else if (_destinationFocusNode.hasFocus) {
       _destinationTextEditingController.text = ViewHelper.getAddress(address);
 
-      _destinationLatLng = address.latLng;
+      _destinationAddress = address;
 
-      _mapController.move(_destinationLatLng!, 13);
+      _mapController.move(address.latLng, 13);
 
       _destinationFocusNode.unfocus();
     }
+
+    _addressFromMap = false;
+
     setState(() {});
   }
 
@@ -104,28 +120,86 @@ class _ViewMapScreenState extends State<ViewMapScreen>
     });
 
     _mapController = MapController();
+    
+    _mapController.mapEventStream.listen((event) {
+      if (_addressFromMap) {
+        if (_pickupFocusNode.hasFocus) {
+          _pickupAddress = Address(
+            id: DateTime.now().toString(),
+            street: 'Unnamed Street',
+            latLng: _mapController.center,
+          );
+
+          _pickupTextEditingController.text =
+              ViewHelper.getAddress(_pickupAddress!);
+        } else if (_destinationFocusNode.hasFocus) {
+          _destinationAddress = Address(
+            id: DateTime.now().toString(),
+            street: 'Unnamed Street',
+            latLng: _mapController.center,
+          );
+
+          _destinationTextEditingController.text =
+              ViewHelper.getAddress(_destinationAddress!);
+        }
+      }
+
+      _addressFromMap = true;
+
+      setState(() {});
+    });
 
     _pickupTextEditingController = TextEditingController();
-    _destinationTextEditingController = TextEditingController();
-
-    _pickupFocusNode = FocusNode();
-    _destinationFocusNode = FocusNode();
-
-    _searchedPlacesCubit = SearchedPlacesCubit();
 
     _pickupTextEditingController.addListener(() {
       final String searchText = _pickupTextEditingController.text;
       if (searchText.trim().isNotEmpty) {
         _searchedPlacesCubit.searchPlaces(context, searchText);
       }
+
+      if (searchText.isEmpty) {
+        _pickupAddress = null;
+      }
+
+      setState(() {});
     });
+
+    _destinationTextEditingController = TextEditingController();
 
     _destinationTextEditingController.addListener(() {
       final String searchText = _destinationTextEditingController.text;
       if (searchText.trim().isNotEmpty) {
         _searchedPlacesCubit.searchPlaces(context, searchText);
       }
+
+      if (searchText.isEmpty) {
+        _destinationAddress = null;
+      }
     });
+
+    _pickupFocusNode = FocusNode();
+
+    _pickupFocusNode.addListener(() {
+      if (_pickupFocusNode.hasFocus && _pickupAddress != null) {
+        _mapController.move(
+          _pickupAddress!.latLng,
+          13,
+        );
+      }
+    });
+
+    _destinationFocusNode = FocusNode();
+
+    _destinationFocusNode.addListener(() {
+      if (_destinationFocusNode.hasFocus && _destinationAddress != null) {
+        _mapController.move(
+          _destinationAddress!.latLng,
+          13,
+        );
+      }
+    });
+
+    _searchedPlacesCubit = SearchedPlacesCubit();
   }
 
   @override
@@ -171,26 +245,50 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                 ),
                 MarkerLayerOptions(
                   markers: [
-                    if (_pickupLatLng != null)
+                    if (_pickupFocusNode.hasFocus)
                       Marker(
-                        point: _pickupLatLng!,
+                        point: _mapController.center,
                         anchorPos: AnchorPos.align(AnchorAlign.top),
                         builder: (context) {
-                          return const Icon(
-                            Icons.location_on,
-                            color: Colors.red,
+                          return Icon(
+                            Icons.location_history,
+                            color: colorScheme.primary,
                             size: 40,
                           );
                         },
                       ),
-                    if (_destinationLatLng != null)
+                    if (_destinationFocusNode.hasFocus)
                       Marker(
-                        point: _destinationLatLng!,
+                        point: _mapController.center,
                         anchorPos: AnchorPos.align(AnchorAlign.top),
                         builder: (context) {
-                          return const Icon(
-                            Icons.location_on,
-                            color: Colors.red,
+                          return Icon(
+                            Icons.location_history_rounded,
+                            color: colorScheme.primary,
+                            size: 40,
+                          );
+                        },
+                      ),
+                    if (_pickupAddress != null && _showRoute)
+                      Marker(
+                        point: _pickupAddress!.latLng,
+                        anchorPos: AnchorPos.align(AnchorAlign.top),
+                        builder: (context) {
+                          return Icon(
+                            Icons.location_history,
+                            color: colorScheme.primary,
+                            size: 40,
+                          );
+                        },
+                      ),
+                    if (_destinationAddress != null && _showRoute)
+                      Marker(
+                        point: _destinationAddress!.latLng,
+                        anchorPos: AnchorPos.align(AnchorAlign.top),
+                        builder: (context) {
+                          return Icon(
+                            Icons.location_history_rounded,
+                            color: colorScheme.primary,
                             size: 40,
                           );
                         },
@@ -201,46 +299,40 @@ class _ViewMapScreenState extends State<ViewMapScreen>
             ),
 
             // Input and Destiantion Picker top widget
-            Positioned(
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: SingleChildScrollView(
-                child: SizedBox(
-                  height: size.height,
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      ExpansionAnimationWidget(
-                        controller: _topSectionAnimationController,
-                        child: InputPickupAndDestinationLocationWidget(
-                          onDonePressed: _destinationLatLng == null ||
-                                  _pickupLatLng == null
-                              ? null
-                              : () => _onDonePressed(),
-                          pickupTextEditingController:
-                              _pickupTextEditingController,
-                          destinationTextEditingController:
-                              _destinationTextEditingController,
-                          pickupFocusNode: _pickupFocusNode,
-                          destinationFocusNode: _destinationFocusNode,
+            SingleChildScrollView(
+              child: SizedBox(
+                height: _showUpButton ? 260 : size.height,
+                width: double.infinity,
+                child: Column(
+                  children: [
+                    ExpansionAnimationWidget(
+                      controller: _topSectionAnimationController,
+                      child: InputPickupAndDestinationLocationWidget(
+                        onDonePressed: _pickupAddress != null &&
+                                _destinationAddress != null
+                            ? () => _onDonePressed()
+                            : null,
+                        pickupTextEditingController:
+                            _pickupTextEditingController,
+                        destinationTextEditingController:
+                            _destinationTextEditingController,
+                        pickupFocusNode: _pickupFocusNode,
+                        destinationFocusNode: _destinationFocusNode,
+                      ),
+                    ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: AddressListBottomWidget(
+                          onAddressSelected: (address) {
+                            _onAddressSelected(address);
+                          },
+                          animationController:
+                              _bottomSectionAnimationController,
                         ),
                       ),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: AddressListBottomWidget(
-                            onAddressSelected: (address) {
-                              _onAddressSelected(address);
-                            },
-                            animationController:
-                                _bottomSectionAnimationController,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
