@@ -103,6 +103,13 @@ class _ViewMapScreenState extends State<ViewMapScreen>
   void initState() {
     super.initState();
 
+    _searchedPlacesCubit = SearchedPlacesCubit();
+    _mapController = MapController();
+    _pickupTextEditingController = TextEditingController();
+    _destinationTextEditingController = TextEditingController();
+    _pickupFocusNode = FocusNode();
+    _destinationFocusNode = FocusNode();
+
     _topSectionAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -119,28 +126,50 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       });
     });
 
-    _mapController = MapController();
-    
-    _mapController.mapEventStream.listen((event) {
+    _mapController.mapEventStream.listen((event) async {
       if (_addressFromMap) {
         if (_pickupFocusNode.hasFocus) {
-          _pickupAddress = Address(
-            id: DateTime.now().toString(),
-            street: 'Unnamed Street',
-            latLng: _mapController.center,
+          final double lat = _mapController.center.latitude;
+          final double lon = _mapController.center.longitude;
+
+          _pickupTextEditingController.text = 'Loading...';
+
+          setState(() {});
+
+          _pickupAddress = await _searchedPlacesCubit.getAddressFromLatLon(
+            context,
+            lat,
+            lon,
           );
 
-          _pickupTextEditingController.text =
-              ViewHelper.getAddress(_pickupAddress!);
+          if (_pickupAddress != null) {
+            _pickupTextEditingController.text = ViewHelper.getAddress(
+              _pickupAddress!,
+            );
+          } else {
+            _pickupTextEditingController.clear();
+          }
         } else if (_destinationFocusNode.hasFocus) {
-          _destinationAddress = Address(
-            id: DateTime.now().toString(),
-            street: 'Unnamed Street',
-            latLng: _mapController.center,
+          final double lat = _mapController.center.latitude;
+          final double lon = _mapController.center.longitude;
+
+          _destinationTextEditingController.text = 'Loading...';
+
+          setState(() {});
+
+          _destinationAddress = await _searchedPlacesCubit.getAddressFromLatLon(
+            context,
+            lat,
+            lon,
           );
 
-          _destinationTextEditingController.text =
-              ViewHelper.getAddress(_destinationAddress!);
+          if (_destinationAddress != null) {
+            _destinationTextEditingController.text = ViewHelper.getAddress(
+              _destinationAddress!,
+            );
+          } else {
+            _destinationTextEditingController.clear();
+          }
         }
       }
 
@@ -148,8 +177,6 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
       setState(() {});
     });
-
-    _pickupTextEditingController = TextEditingController();
 
     _pickupTextEditingController.addListener(() {
       final String searchText = _pickupTextEditingController.text;
@@ -164,8 +191,6 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       setState(() {});
     });
 
-    _destinationTextEditingController = TextEditingController();
-
     _destinationTextEditingController.addListener(() {
       final String searchText = _destinationTextEditingController.text;
       if (searchText.trim().isNotEmpty) {
@@ -177,8 +202,6 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       }
     });
 
-    _pickupFocusNode = FocusNode();
-
     _pickupFocusNode.addListener(() {
       if (_pickupFocusNode.hasFocus && _pickupAddress != null) {
         _mapController.move(
@@ -188,8 +211,6 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       }
     });
 
-    _destinationFocusNode = FocusNode();
-
     _destinationFocusNode.addListener(() {
       if (_destinationFocusNode.hasFocus && _destinationAddress != null) {
         _mapController.move(
@@ -198,8 +219,6 @@ class _ViewMapScreenState extends State<ViewMapScreen>
         );
       }
     });
-
-    _searchedPlacesCubit = SearchedPlacesCubit();
   }
 
   @override
@@ -249,6 +268,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                       Marker(
                         point: _mapController.center,
                         anchorPos: AnchorPos.align(AnchorAlign.top),
+                        rotate: true,
                         builder: (context) {
                           return Icon(
                             Icons.location_history,
@@ -261,6 +281,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                       Marker(
                         point: _mapController.center,
                         anchorPos: AnchorPos.align(AnchorAlign.top),
+                        rotate: true,
                         builder: (context) {
                           return Icon(
                             Icons.location_history_rounded,
@@ -273,6 +294,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                       Marker(
                         point: _pickupAddress!.latLng,
                         anchorPos: AnchorPos.align(AnchorAlign.top),
+                        rotate: true,
                         builder: (context) {
                           return Icon(
                             Icons.location_history,
@@ -285,6 +307,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                       Marker(
                         point: _destinationAddress!.latLng,
                         anchorPos: AnchorPos.align(AnchorAlign.top),
+                        rotate: true,
                         builder: (context) {
                           return Icon(
                             Icons.location_history_rounded,

@@ -1,3 +1,4 @@
+import 'package:saffar_app/core/usecases/generate_id_usecase.dart';
 import 'package:saffar_app/core/utils/model_helper.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -46,19 +47,16 @@ class Address {
       id: map['id'].toString(),
       place: map['place']?.toString(),
       street: map['street'].toString(),
-      state: map['state'].toString(),
-      country: map['country'].toString(),
+      state: map['state']?.toString(),
+      country: map['country']?.toString(),
       latLng: LatLng(lat, lon),
-      pincode: map['pincode'] as String?,
+      pincode: map['pincode']?.toString(),
     );
   }
 
-  /// Converts a JSON that is received from TomTom Places API
+  /// Converts a JSON that is received from TomTom Search Places API
   /// to a Address Model.
-  factory Address.fromPlacesApiResponseMap(Map<String, dynamic> map) {
-    map['address'].forEach((key, value) => {key: value});
-    map['position'].forEach((key, value) => {key: value});
-
+  factory Address.fromSearchPlacesApiResponseMap(Map<String, dynamic> map) {
     ModelHelper.throwExceptionIfRequiredFieldsNotPresentInMap(
       'Address',
       map,
@@ -91,7 +89,43 @@ class Address {
       street: map['address']['streetName'] != null
           ? map['address']['streetName'].toString()
           : 'Unnamed Road',
-      state: map['address']['countrySubdivision'].toString(),
+      state: map['address']['countrySubdivision']?.toString(),
+      country: map['address']['country']?.toString(),
+      latLng: LatLng(lat, lon),
+      pincode: map['address']['postalCode']?.toString(),
+    );
+  }
+
+  /// Converts a JSON that is received from TomTom Reverse Geocode API
+  /// to a Address Model.
+  factory Address.fromReverseGeocodeApiResponseMap(Map<String, dynamic> map) {
+    final GenerateIdUsecase _generateIdUsecase = GenerateIdUsecase();
+
+    ModelHelper.throwExceptionIfRequiredFieldsNotPresentInMap(
+      'Address',
+      map,
+      [
+        'address',
+        'position',
+      ],
+    );
+
+    final List<String> latLngStrings = map['position'].toString().split(',');
+
+    final double? lat = double.tryParse(latLngStrings[0]);
+    final double? lon = double.tryParse(latLngStrings[1]);
+
+    if (lat == null || lon == null) {
+      throw Exception('Model Address: Address has no lat lon.');
+    }
+
+    return Address(
+      id: _generateIdUsecase.call(),
+      place: map['address']['localName']?.toString(),
+      street: map['address']['streetName'] != null
+          ? map['address']['streetName'].toString()
+          : 'Unnamed Road',
+      state: map['address']['countrySubdivisionName']?.toString(),
       country: map['address']['country']?.toString(),
       latLng: LatLng(lat, lon),
       pincode: map['address']['postalCode']?.toString(),

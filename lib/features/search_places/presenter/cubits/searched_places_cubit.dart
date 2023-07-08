@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:saffar_app/core/utils/snackbar.dart';
+import 'package:saffar_app/features/search_places/domain/usecases/get_address_from_lat_lon_usecase.dart';
 import 'package:saffar_app/features/search_places/domain/usecases/get_searched_addresses_usecase.dart';
 
 import '../../../../core/models/address.dart';
@@ -12,6 +13,7 @@ class SearchedPlacesCubit extends Cubit<SearchedPlacesState> {
 
   final GetSearchedAddressesUsecase _getSearchedAddressesUsecase =
       GetSearchedAddressesUsecase();
+  final GetAddressFromLatLon _getAddressFromLatLon = GetAddressFromLatLon();
 
   /// Search places and emit the searched places. If Failure then
   /// show SnackBar message.
@@ -63,5 +65,34 @@ class SearchedPlacesCubit extends Cubit<SearchedPlacesState> {
     );
 
     emit(SearchedPlacesState(searchedPlaces: searchedPlaces));
+  }
+
+  /// Gets Address from lat and lon and emits 
+  /// text field loading when address is being fetched
+  Future<Address?> getAddressFromLatLon(
+    BuildContext context,
+    double lat,
+    double lon,
+  ) async {
+    emit(state.copyWith(textFieldLoading: true));
+
+    final result = await _getAddressFromLatLon.call(lat, lon);
+
+    Address? address;
+
+    result.fold(
+      (l) {
+        if (l.code == 'NO_PLACE_FOUND' && l.message != null) {
+          Snackbar.of(context).show(l.message!);
+        }
+      },
+      (r) {
+        address = r;
+      },
+    );
+
+    emit(state.copyWith(textFieldLoading: false));
+
+    return address;
   }
 }
