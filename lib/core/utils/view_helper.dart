@@ -1,10 +1,16 @@
 import 'package:saffar_app/core/models/address.dart';
 
 class ViewHelper {
-
   /// Gest the total address like 'Place, Road, State, Country, Pincode'
   static String getAddress(Address address) {
-    String res = '${getAddressPlace(address)}, ${getAddressWithoutPlace(address)}';
+    String res = '';
+
+    if (address.place != null) {
+      res = '${address.place} ${getAddressWithoutPlace(address)}';
+    } else {
+      res = getAddressWithoutPlace(address);
+    }
+
     return res;
   }
 
