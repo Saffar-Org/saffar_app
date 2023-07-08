@@ -134,8 +134,6 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
           _pickupTextEditingController.text = 'Loading...';
 
-          setState(() {});
-
           _pickupAddress = await _searchedPlacesCubit.getAddressFromLatLon(
             context,
             lat,
@@ -154,8 +152,6 @@ class _ViewMapScreenState extends State<ViewMapScreen>
           final double lon = _mapController.center.longitude;
 
           _destinationTextEditingController.text = 'Loading...';
-
-          setState(() {});
 
           _destinationAddress = await _searchedPlacesCubit.getAddressFromLatLon(
             context,
@@ -187,8 +183,6 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       if (searchText.isEmpty) {
         _pickupAddress = null;
       }
-
-      setState(() {});
     });
 
     _destinationTextEditingController.addListener(() {
