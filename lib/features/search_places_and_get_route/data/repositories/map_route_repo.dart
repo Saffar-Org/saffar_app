@@ -18,7 +18,7 @@ class MapRouteRepo {
         'https://api.tomtom.com/routing/1/calculateRoute/${sourceLatLng.latitude},${sourceLatLng.longitude}:${destinationLatLng.latitude},${destinationLatLng.longitude}/json?key=${Strings.mapApiKey}',
       );
 
-      final List list = response.data['routes']['legs']['points'] as List;
+      final List list = response.data['routes'][0]['legs'][0]['points'] as List;
 
       final List<Map<String, dynamic>> maps =
           list.map((e) => e as Map<String, dynamic>).toList();
@@ -26,8 +26,8 @@ class MapRouteRepo {
       final List<LatLng> points = [];
 
       for (final map in maps) {
-        final double? lat = double.tryParse(map['latitude']);
-        final double? lon = double.tryParse(map['longitude']);
+        final double? lat = double.tryParse(map['latitude'].toString());
+        final double? lon = double.tryParse(map['longitude'].toString());
 
         if (lat != null && lon != null) {
           points.add(LatLng(lat, lon));

@@ -6,6 +6,7 @@ import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/utils/view_helper.dart';
 import 'package:saffar_app/core/widgets/expansion_animation_widget.dart';
+import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/map_route_cubit.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/searched_places_cubit.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/widgets/input_pickup_and_destination_location_widget.dart';
 
@@ -34,6 +35,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
   late final FocusNode _destinationFocusNode;
 
   late final SearchedPlacesCubit _searchedPlacesCubit;
+  late final MapRouteCubit _mapRouteCubit;
 
   Address? _pickupAddress;
   Address? _destinationAddress;
@@ -46,20 +48,31 @@ class _ViewMapScreenState extends State<ViewMapScreen>
     _topSectionAnimationController.reverse();
     _bottomSectionAnimationController.reverse();
 
+    _mapRouteCubit.clearRoute();
+
     _showRoute = false;
 
     setState(() {});
   }
 
-  void _onDonePressed() {
-    _topSectionAnimationController.forward();
-    _bottomSectionAnimationController.forward();
-
+  void _onDonePressed() async {
     if (_pickupAddress != null && _destinationAddress != null) {
+      final LatLng sourceLatLng = _pickupAddress!.latLng;
+      final LatLng destinationLatLng = _destinationAddress!.latLng;
+
+      await _mapRouteCubit.getRouteFromSourceToDestination(
+        context,
+        sourceLatLng,
+        destinationLatLng,
+      );
+
+      _topSectionAnimationController.forward();
+      _bottomSectionAnimationController.forward();
+
       final CenterZoom newCenterZoom = _mapController.centerZoomFitBounds(
         LatLngBounds(
-          _pickupAddress!.latLng,
-          _destinationAddress!.latLng,
+          sourceLatLng,
+          destinationLatLng,
         ),
       );
 
@@ -67,9 +80,9 @@ class _ViewMapScreenState extends State<ViewMapScreen>
         newCenterZoom.center,
         newCenterZoom.zoom - .2,
       );
-    }
 
-    _showRoute = true;
+      _showRoute = true;
+    }
 
     setState(() {});
   }
@@ -104,9 +117,13 @@ class _ViewMapScreenState extends State<ViewMapScreen>
     super.initState();
 
     _searchedPlacesCubit = SearchedPlacesCubit();
+    _mapRouteCubit = MapRouteCubit();
+
     _mapController = MapController();
+
     _pickupTextEditingController = TextEditingController();
     _destinationTextEditingController = TextEditingController();
+
     _pickupFocusNode = FocusNode();
     _destinationFocusNode = FocusNode();
 
@@ -239,80 +256,98 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
     final Size size = MediaQuery.of(context).size;
 
-    return BlocProvider.value(
-      value: _searchedPlacesCubit,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _searchedPlacesCubit),
+        BlocProvider.value(value: _mapRouteCubit),
+      ],
       child: Scaffold(
         body: Stack(
           children: [
             // Map
-            FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                center: LatLng(40, 30),
-                zoom: 13, // 0 to 22 where 0 is whole Earth
-              ),
-              layers: [
-                TileLayerOptions(
-                  urlTemplate:
-                      "https://api.tomtom.com/map/1/tile/basic/night/{z}/{x}/{y}.png?key=${Strings.mapApiKey}",
-                ),
-                MarkerLayerOptions(
-                  markers: [
-                    if (_pickupFocusNode.hasFocus)
-                      Marker(
-                        point: _mapController.center,
-                        anchorPos: AnchorPos.align(AnchorAlign.top),
-                        rotate: true,
-                        builder: (context) {
-                          return Icon(
-                            Icons.location_history,
+            BlocBuilder<MapRouteCubit, MapRouteState>(
+              builder: (context, state) {
+                return FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    center: LatLng(40, 30),
+                    zoom: 13, // 0 to 22 where 0 is whole Earth
+                  ),
+                  layers: [
+                    TileLayerOptions(
+                      urlTemplate:
+                          "https://api.tomtom.com/map/1/tile/basic/night/{z}/{x}/{y}.png?key=${Strings.mapApiKey}",
+                    ),
+                    MarkerLayerOptions(
+                      markers: [
+                        if (_pickupFocusNode.hasFocus)
+                          Marker(
+                            point: _mapController.center,
+                            anchorPos: AnchorPos.align(AnchorAlign.top),
+                            rotate: true,
+                            builder: (context) {
+                              return Icon(
+                                Icons.location_history,
+                                color: colorScheme.primary,
+                                size: 40,
+                              );
+                            },
+                          ),
+                        if (_destinationFocusNode.hasFocus)
+                          Marker(
+                            point: _mapController.center,
+                            anchorPos: AnchorPos.align(AnchorAlign.top),
+                            rotate: true,
+                            builder: (context) {
+                              return Icon(
+                                Icons.location_history_rounded,
+                                color: colorScheme.primary,
+                                size: 40,
+                              );
+                            },
+                          ),
+                        if (_pickupAddress != null && _showRoute)
+                          Marker(
+                            point: _pickupAddress!.latLng,
+                            anchorPos: AnchorPos.align(AnchorAlign.top),
+                            rotate: true,
+                            builder: (context) {
+                              return Icon(
+                                Icons.location_history,
+                                color: colorScheme.primary,
+                                size: 40,
+                              );
+                            },
+                          ),
+                        if (_destinationAddress != null && _showRoute)
+                          Marker(
+                            point: _destinationAddress!.latLng,
+                            anchorPos: AnchorPos.align(AnchorAlign.top),
+                            rotate: true,
+                            builder: (context) {
+                              return Icon(
+                                Icons.location_history_rounded,
+                                color: colorScheme.primary,
+                                size: 40,
+                              );
+                            },
+                          ),
+                      ],
+                    ),
+                    if (state is MapRouteGot)
+                      PolylineLayerOptions(
+                        polylines: [
+                          Polyline(
+                            points: state.points,
                             color: colorScheme.primary,
-                            size: 40,
-                          );
-                        },
-                      ),
-                    if (_destinationFocusNode.hasFocus)
-                      Marker(
-                        point: _mapController.center,
-                        anchorPos: AnchorPos.align(AnchorAlign.top),
-                        rotate: true,
-                        builder: (context) {
-                          return Icon(
-                            Icons.location_history_rounded,
-                            color: colorScheme.primary,
-                            size: 40,
-                          );
-                        },
-                      ),
-                    if (_pickupAddress != null && _showRoute)
-                      Marker(
-                        point: _pickupAddress!.latLng,
-                        anchorPos: AnchorPos.align(AnchorAlign.top),
-                        rotate: true,
-                        builder: (context) {
-                          return Icon(
-                            Icons.location_history,
-                            color: colorScheme.primary,
-                            size: 40,
-                          );
-                        },
-                      ),
-                    if (_destinationAddress != null && _showRoute)
-                      Marker(
-                        point: _destinationAddress!.latLng,
-                        anchorPos: AnchorPos.align(AnchorAlign.top),
-                        rotate: true,
-                        builder: (context) {
-                          return Icon(
-                            Icons.location_history_rounded,
-                            color: colorScheme.primary,
-                            size: 40,
-                          );
-                        },
+                            strokeCap: StrokeCap.round,
+                            strokeWidth: 4,
+                          ),
+                        ],
                       ),
                   ],
-                ),
-              ],
+                );
+              },
             ),
 
             // Input and Destiantion Picker top widget
@@ -322,20 +357,26 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                 width: double.infinity,
                 child: Column(
                   children: [
-                    ExpansionAnimationWidget(
-                      controller: _topSectionAnimationController,
-                      child: InputPickupAndDestinationLocationWidget(
-                        onDonePressed: _pickupAddress != null &&
-                                _destinationAddress != null
-                            ? () => _onDonePressed()
-                            : null,
-                        pickupTextEditingController:
-                            _pickupTextEditingController,
-                        destinationTextEditingController:
-                            _destinationTextEditingController,
-                        pickupFocusNode: _pickupFocusNode,
-                        destinationFocusNode: _destinationFocusNode,
-                      ),
+                    BlocBuilder<MapRouteCubit, MapRouteState>(
+                      builder: (context, state) {
+                        return ExpansionAnimationWidget(
+                          controller: _topSectionAnimationController,
+                          child: InputPickupAndDestinationLocationWidget(
+                            onDonePressed: _pickupAddress != null &&
+                                    _destinationAddress != null
+                                ? () => (state is MapRouteLoading)
+                                    ? null
+                                    : _onDonePressed()
+                                : null,
+                            pickupTextEditingController:
+                                _pickupTextEditingController,
+                            destinationTextEditingController:
+                                _destinationTextEditingController,
+                            pickupFocusNode: _pickupFocusNode,
+                            destinationFocusNode: _destinationFocusNode,
+                          ),
+                        );
+                      },
                     ),
                     Expanded(
                       child: Align(

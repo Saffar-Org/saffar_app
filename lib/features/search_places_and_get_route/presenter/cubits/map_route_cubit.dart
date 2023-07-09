@@ -14,7 +14,7 @@ class MapRouteCubit extends Cubit<MapRouteState> {
       GetPointsFromSourceToDestinationUsecase();
 
   /// Gets the route from source to destination
-  void getRouteFromSourceToDestination(
+  Future<void> getRouteFromSourceToDestination(
     BuildContext context,
     LatLng sourceLatLng,
     LatLng destinationLatLng,
@@ -35,5 +35,10 @@ class MapRouteCubit extends Cubit<MapRouteState> {
         emit(MapRouteGot(points: r));
       },
     );
+  }
+
+  /// Clears the current route
+  void clearRoute() {
+    emit(const MapRouteInitial());
   }
 }
