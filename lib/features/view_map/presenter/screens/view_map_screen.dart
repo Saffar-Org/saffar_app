@@ -270,7 +270,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                 return FlutterMap(
                   mapController: _mapController,
                   options: MapOptions(
-                    center: LatLng(40, 30),
+                    center: LatLng(22.5726, 88.3639),
                     zoom: 13, // 0 to 22 where 0 is whole Earth
                   ),
                   layers: [
