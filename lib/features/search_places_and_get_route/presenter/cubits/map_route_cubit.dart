@@ -13,6 +13,7 @@ class MapRouteCubit extends Cubit<MapRouteState> {
       _getPointsFromSourceToDestinationUsecase =
       GetPointsFromSourceToDestinationUsecase();
 
+  /// Gets the route from source to destination
   void getRouteFromSourceToDestination(
     BuildContext context,
     LatLng sourceLatLng,
