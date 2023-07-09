@@ -3,7 +3,7 @@ import 'package:saffar_app/core/errors/custom_exception.dart';
 import 'package:saffar_app/core/errors/failure.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:saffar_app/core/service_locator.dart';
-import 'package:saffar_app/features/search_places/data/repositories/map_route_repo.dart';
+import 'package:saffar_app/features/search_places_and_get_route/data/repositories/map_route_repo.dart';
 
 class GetPointsFromSourceToDestinationUsecase {
   final MapRouteRepo _mapRoutesRepo = sl<MapRouteRepo>();

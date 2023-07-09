@@ -6,8 +6,8 @@ import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/utils/view_helper.dart';
 import 'package:saffar_app/core/widgets/expansion_animation_widget.dart';
-import 'package:saffar_app/features/search_places/presenter/cubits/searched_places_cubit.dart';
-import 'package:saffar_app/features/search_places/presenter/widgets/input_pickup_and_destination_location_widget.dart';
+import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/searched_places_cubit.dart';
+import 'package:saffar_app/features/search_places_and_get_route/presenter/widgets/input_pickup_and_destination_location_widget.dart';
 
 import '../widgets/address_list_bottom_widget.dart';
 

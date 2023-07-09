@@ -3,7 +3,7 @@ import 'package:saffar_app/core/errors/custom_exception.dart';
 import 'package:saffar_app/core/errors/failure.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/service_locator.dart';
-import 'package:saffar_app/features/search_places/data/repositories/search_places_repo.dart';
+import 'package:saffar_app/features/search_places_and_get_route/data/repositories/search_places_repo.dart';
 
 class GetAddressFromLatLon {
   final SearchPlacesRepo _searchPlacesRepo = sl<SearchPlacesRepo>();

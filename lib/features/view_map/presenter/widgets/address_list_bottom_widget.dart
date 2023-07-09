@@ -3,7 +3,7 @@ import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/widgets/expansion_animation_widget.dart';
 
 import '../../../../core/constants/nums.dart';
-import '../../../search_places/presenter/widgets/searched_addresses_widget.dart';
+import '../../../search_places_and_get_route/presenter/widgets/searched_addresses_widget.dart';
 
 class AddressListBottomWidget extends StatefulWidget {
   const AddressListBottomWidget({

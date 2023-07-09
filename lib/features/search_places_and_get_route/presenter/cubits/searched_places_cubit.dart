@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:saffar_app/core/utils/snackbar.dart';
-import 'package:saffar_app/features/search_places/domain/usecases/get_address_from_lat_lon_usecase.dart';
-import 'package:saffar_app/features/search_places/domain/usecases/get_searched_addresses_usecase.dart';
+import 'package:saffar_app/features/search_places_and_get_route/domain/usecases/get_address_from_lat_lon_usecase.dart';
+import 'package:saffar_app/features/search_places_and_get_route/domain/usecases/get_searched_addresses_usecase.dart';
 
 import '../../../../core/models/address.dart';
 

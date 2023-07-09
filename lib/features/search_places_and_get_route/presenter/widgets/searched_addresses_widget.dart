@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/widgets/address_widget.dart';
-import 'package:saffar_app/features/search_places/presenter/cubits/searched_places_cubit.dart';
+import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/searched_places_cubit.dart';
 
 class SearchedAddressesWidget extends StatelessWidget {
   const SearchedAddressesWidget({
