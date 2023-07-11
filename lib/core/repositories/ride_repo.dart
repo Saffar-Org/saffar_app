@@ -22,7 +22,7 @@ class RideRepo {
   /// Gets all the previous rides of the user
   Future<List<Ride>> getPreviousRides() async {
     if (token == null || userId == null) {
-      throw const CustomException(message: 'User not logged in');
+      throw CustomException.userNotLoggedIn();
     }
 
     try {
@@ -62,7 +62,7 @@ class RideRepo {
   /// Gives Driver, drivers source position, drivers destination position
   Future<Map<String, dynamic>> findRideDriver() async {
     if (token == null) {
-      throw const CustomException(message: 'User not logged in');
+      throw throw CustomException.userNotLoggedIn();
     }
 
     try {
