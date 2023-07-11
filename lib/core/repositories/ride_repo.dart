@@ -5,7 +5,7 @@ import 'package:saffar_app/core/models/ride.dart';
 import 'package:saffar_app/core/service_locator.dart';
 
 /// Gets rides data
-class RidesRepo {
+class RideRepo {
   final Dio _dio = sl<Dio>();
 
   late final String? token;
@@ -56,6 +56,28 @@ class RidesRepo {
         code: e.response?.data['error']['code'],
         message: e.response?.data['error']['message'],
       );
+    }
+  }
+
+  /// Gives Driver, drivers source position, drivers destination position
+  Future<Map<String, dynamic>> findRideDriver() async {
+    if (token == null) {
+      throw const CustomException(message: 'User not logged in');
+    }
+
+    try {
+      final Response response = await _dio.get(
+        '${Strings.baseApiUrl}/ride/find_ride_driver',
+        options: Options(
+          headers: {
+            'authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      return response.data;
+    } catch (e) {
+      throw CustomException(message: e.toString());
     }
   }
 }
