@@ -13,10 +13,8 @@ class PreviousRidesCubit extends Cubit<PreviousRidesState> {
   final GetPreviousRidesUsecase _getPreviousRidesUsecase =
       GetPreviousRidesUsecase();
 
-  /// Initialized Rides Repo and then gets list of previous rides,
-  /// previous rides without cancellation and latest two previous rides
-  /// without cancellation. Also all the rides are in descending order.
-  void init(String token, String userId) async {
+  /// Gets list of previous rides and emits them
+  void getListOfPreviousRidesAndEmit() async {
     final result = await _getPreviousRidesUsecase.getListOfPreviousRides();
 
     result.fold(

@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/cubits/previous_rides_cubit.dart';
-import 'package:saffar_app/core/cubits/user_cubit.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/widgets/address_widget.dart';
+import 'package:saffar_app/features/home/presenter/cubits/home_cubit.dart';
 import 'package:saffar_app/features/view_map/presenter/screens/view_map_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,18 +16,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late final HomeCubit _homeCubit;
+
   @override
   void initState() {
     super.initState();
 
-    final UserState userState = context.read<UserCubit>().state;
+    _homeCubit = HomeCubit();
 
-    if (userState.currentUser != null && userState.token != null) {
-      final String token = userState.token!;
-      final String userId = userState.currentUser!.id;
+    _homeCubit.initHomeCubit(context);
 
-      context.read<PreviousRidesCubit>().init(token, userId);
-    }
+    context.read<PreviousRidesCubit>().getListOfPreviousRidesAndEmit();
   }
 
   @override
