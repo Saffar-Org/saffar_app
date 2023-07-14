@@ -30,8 +30,8 @@ class Driver {
         'id',
         'name',
         'phone',
-        'vehicleName',
-        'vehicleNumber',
+        'vehicle_name',
+        'vehicle_number',
         'active',
       ],
     );
@@ -41,9 +41,9 @@ class Driver {
       name: map['name'].toString(),
       phone: map['phone'].toString(),
       email: map['email']?.toString(),
-      vehicleName: map['vehicleName'].toString(),
-      vehicleNumber: map['vehicleNumber'].toString(),
-      imageUrl: map['imageUrl']?.toString(),
+      vehicleName: map['vehicle_name'].toString(),
+      vehicleNumber: map['vehicle_number'].toString(),
+      imageUrl: map['image_url']?.toString(),
       active: map['active'] as bool,
     );
   }
@@ -55,9 +55,9 @@ class Driver {
       'name': name,
       'phone': phone,
       'email': email,
-      'vehicleName': vehicleName,
-      'vehicleNumber': vehicleNumber,
-      'imageUrl': imageUrl,
+      'vehicle_name': vehicleName,
+      'vehicle_number': vehicleNumber,
+      'image_url': imageUrl,
       'active': active,
     };
   }

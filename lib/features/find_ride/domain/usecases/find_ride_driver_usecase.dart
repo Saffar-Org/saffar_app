@@ -11,13 +11,20 @@ class FindRideDriverUsecase {
   final RideRepo _rideRepo = sl<RideRepo>();
   final MapRouteRepo _mapRouteRepo = sl<MapRouteRepo>();
 
-  /// Find Ride Driver info and get the route points and set 
+  /// Find Ride Driver info and get the route points and set
   /// the route points to the ride driver model
-  Future<Either<Failure, RideDriver>> call() async {
+  Future<Either<Failure, RideDriver>> call(LatLng userSourcePosition) async {
     try {
-      RideDriver rideDriver = await _rideRepo.findRideDriver();
+      final double latitude = userSourcePosition.latitude;
+      final double longitude = userSourcePosition.longitude;
 
-      final List<LatLng> points = await _mapRouteRepo.getPointsFromSourceToDestination(
+      RideDriver rideDriver = await _rideRepo.findRideDriver(
+        latitude,
+        longitude,
+      );
+
+      final List<LatLng> points =
+          await _mapRouteRepo.getPointsFromSourceToDestination(
         rideDriver.sourcePosition,
         rideDriver.destinationPosition,
       );

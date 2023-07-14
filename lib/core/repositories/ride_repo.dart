@@ -61,7 +61,11 @@ class RideRepo {
   }
 
   /// Gives Driver, drivers source position, drivers destination position
-  Future<RideDriver> findRideDriver() async {
+  /// Params: User source latitude and longitude
+  Future<RideDriver> findRideDriver(
+    double latitude,
+    double longitude,
+  ) async {
     if (token == null) {
       throw throw CustomException.userNotLoggedIn();
     }
@@ -74,6 +78,11 @@ class RideRepo {
             'authorization': 'Bearer $token',
           },
         ),
+        data: {
+          'latitude': latitude,
+          'longitude': longitude,
+          'map_api_key': Strings.mapApiKey,
+        },
       );
 
       final Map<String, dynamic> map = response.data as Map<String, dynamic>;

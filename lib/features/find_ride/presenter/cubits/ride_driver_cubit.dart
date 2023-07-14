@@ -12,10 +12,13 @@ class RideDriverCubit extends Cubit<RideDriverState> {
 
   final FindRideDriverUsecase _findRideDriverUsecase = FindRideDriverUsecase();
 
-  void findRideDriver(BuildContext context) async {
+  Future<void> findRideDriver(
+    BuildContext context,
+    LatLng userSourcePosition,
+  ) async {
     emit(const RideDriverLoading());
 
-    final result = await _findRideDriverUsecase.call();
+    final result = await _findRideDriverUsecase.call(userSourcePosition);
 
     result.fold(
       (l) {

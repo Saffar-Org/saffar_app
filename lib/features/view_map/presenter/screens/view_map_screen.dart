@@ -6,6 +6,7 @@ import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/utils/view_helper.dart';
 import 'package:saffar_app/core/widgets/expansion_animation_widget.dart';
+import 'package:saffar_app/features/find_ride/presenter/cubits/ride_driver_cubit.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/map_route_cubit.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/searched_places_cubit.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/widgets/input_pickup_and_destination_location_widget.dart';
@@ -36,12 +37,15 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
   late final SearchedPlacesCubit _searchedPlacesCubit;
   late final MapRouteCubit _mapRouteCubit;
+  late final RideDriverCubit _rideDriverCubit;
 
   Address? _pickupAddress;
   Address? _destinationAddress;
 
   bool _showUpButton = false;
   bool _addressFromMap = false;
+
+  /// Show source to destination route of user
   bool _showRoute = false;
 
   void _onShowUpButtonPressed() {
@@ -82,6 +86,12 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       );
 
       _showRoute = true;
+      setState(() {});
+
+      await _rideDriverCubit.findRideDriver(
+        context,
+        sourceLatLng,
+      );
     }
 
     setState(() {});
@@ -118,6 +128,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
     _searchedPlacesCubit = SearchedPlacesCubit();
     _mapRouteCubit = MapRouteCubit();
+    _rideDriverCubit = RideDriverCubit();
 
     _mapController = MapController();
 
@@ -230,6 +241,25 @@ class _ViewMapScreenState extends State<ViewMapScreen>
         );
       }
     });
+
+    _rideDriverCubit.stream.listen((rideDriverState) {
+      if (rideDriverState is RideDriverGot) {
+        final LatLng vehicleSourcePosition = rideDriverState.points[0];
+        final LatLng userPosition = _pickupAddress!.latLng;
+
+        final CenterZoom newCenterZoom = _mapController.centerZoomFitBounds(
+          LatLngBounds(vehicleSourcePosition, userPosition),
+        );
+
+        _mapController.move(
+          newCenterZoom.center,
+          newCenterZoom.zoom - .2,
+        );
+
+        _showRoute = false;
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -248,11 +278,14 @@ class _ViewMapScreenState extends State<ViewMapScreen>
     _destinationFocusNode.dispose();
 
     _searchedPlacesCubit.close();
+    _mapRouteCubit.close();
+    _rideDriverCubit.close();
   }
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
 
     final Size size = MediaQuery.of(context).size;
 
@@ -260,141 +293,190 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       providers: [
         BlocProvider.value(value: _searchedPlacesCubit),
         BlocProvider.value(value: _mapRouteCubit),
+        BlocProvider.value(value: _rideDriverCubit),
       ],
       child: Scaffold(
-        body: Stack(
-          children: [
-            // Map
-            BlocBuilder<MapRouteCubit, MapRouteState>(
-              builder: (context, state) {
-                return FlutterMap(
-                  mapController: _mapController,
-                  options: MapOptions(
-                    center: LatLng(22.5726, 88.3639),
-                    zoom: 13, // 0 to 22 where 0 is whole Earth
-                  ),
-                  layers: [
-                    TileLayerOptions(
-                      urlTemplate:
-                          "https://api.tomtom.com/map/1/tile/basic/night/{z}/{x}/{y}.png?key=${Strings.mapApiKey}",
-                    ),
-                    MarkerLayerOptions(
-                      markers: [
-                        if (_pickupFocusNode.hasFocus)
-                          Marker(
-                            point: _mapController.center,
-                            anchorPos: AnchorPos.align(AnchorAlign.top),
-                            rotate: true,
-                            builder: (context) {
-                              return Icon(
-                                Icons.location_history,
+        body: BlocBuilder<RideDriverCubit, RideDriverState>(
+          builder: (context, rideDriverState) {
+            return Stack(
+              children: [
+                // Map
+                BlocBuilder<MapRouteCubit, MapRouteState>(
+                  builder: (context, mapRouteState) {
+                    return FlutterMap(
+                      mapController: _mapController,
+                      options: MapOptions(
+                        center: LatLng(22.5726, 88.3639),
+                        zoom: 13, // 0 to 22 where 0 is whole Earth
+                      ),
+                      layers: [
+                        TileLayerOptions(
+                          urlTemplate:
+                              "https://api.tomtom.com/map/1/tile/basic/night/{z}/{x}/{y}.png?key=${Strings.mapApiKey}",
+                        ),
+                        MarkerLayerOptions(
+                          markers: [
+                            if (_pickupFocusNode.hasFocus)
+                              Marker(
+                                point: _mapController.center,
+                                anchorPos: AnchorPos.align(AnchorAlign.top),
+                                rotate: true,
+                                builder: (context) {
+                                  return Icon(
+                                    Icons.location_history,
+                                    color: colorScheme.primary,
+                                    size: 40,
+                                  );
+                                },
+                              ),
+                            if (_destinationFocusNode.hasFocus)
+                              Marker(
+                                point: _mapController.center,
+                                anchorPos: AnchorPos.align(AnchorAlign.top),
+                                rotate: true,
+                                builder: (context) {
+                                  return Icon(
+                                    Icons.location_history_rounded,
+                                    color: colorScheme.primary,
+                                    size: 40,
+                                  );
+                                },
+                              ),
+                            if (_pickupAddress != null &&
+                                (_showRoute ||
+                                    rideDriverState is RideDriverGot))
+                              Marker(
+                                point: _pickupAddress!.latLng,
+                                anchorPos: AnchorPos.align(AnchorAlign.top),
+                                rotate: true,
+                                builder: (context) {
+                                  return Icon(
+                                    Icons.location_history,
+                                    color: colorScheme.primary,
+                                    size: 40,
+                                  );
+                                },
+                              ),
+                            if (_destinationAddress != null && _showRoute)
+                              Marker(
+                                point: _destinationAddress!.latLng,
+                                anchorPos: AnchorPos.align(AnchorAlign.top),
+                                rotate: true,
+                                builder: (context) {
+                                  return Icon(
+                                    Icons.location_history_rounded,
+                                    color: colorScheme.primary,
+                                    size: 40,
+                                  );
+                                },
+                              ),
+                            if (rideDriverState is RideDriverGot && !_showRoute)
+                              Marker(
+                                point: rideDriverState.points[0],
+                                anchorPos: AnchorPos.align(AnchorAlign.top),
+                                rotate: true,
+                                builder: (context) {
+                                  return Icon(
+                                    Icons.car_repair_sharp,
+                                    color: colorScheme.primary,
+                                    size: 40,
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
+                        PolylineLayerOptions(
+                          polylines: [
+                            if (mapRouteState is MapRouteGot && _showRoute)
+                              Polyline(
+                                points: mapRouteState.points,
                                 color: colorScheme.primary,
-                                size: 40,
-                              );
-                            },
-                          ),
-                        if (_destinationFocusNode.hasFocus)
-                          Marker(
-                            point: _mapController.center,
-                            anchorPos: AnchorPos.align(AnchorAlign.top),
-                            rotate: true,
-                            builder: (context) {
-                              return Icon(
-                                Icons.location_history_rounded,
+                                strokeCap: StrokeCap.round,
+                                strokeWidth: 4,
+                              ),
+                            if (rideDriverState is RideDriverGot && !_showRoute)
+                              Polyline(
+                                points: rideDriverState.points,
                                 color: colorScheme.primary,
-                                size: 40,
-                              );
-                            },
+                                strokeCap: StrokeCap.round,
+                                strokeWidth: 4,
+                              ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
+                ),
+
+                // Input and Destiantion Picker top widget
+                SingleChildScrollView(
+                  child: SizedBox(
+                    height: _showUpButton ? 260 : size.height,
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        BlocBuilder<MapRouteCubit, MapRouteState>(
+                          builder: (context, state) {
+                            return ExpansionAnimationWidget(
+                              controller: _topSectionAnimationController,
+                              child: InputPickupAndDestinationLocationWidget(
+                                onDonePressed: _pickupAddress != null &&
+                                        _destinationAddress != null
+                                    ? () => (state is MapRouteLoading)
+                                        ? null
+                                        : _onDonePressed()
+                                    : null,
+                                pickupTextEditingController:
+                                    _pickupTextEditingController,
+                                destinationTextEditingController:
+                                    _destinationTextEditingController,
+                                pickupFocusNode: _pickupFocusNode,
+                                destinationFocusNode: _destinationFocusNode,
+                              ),
+                            );
+                          },
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: AddressListBottomWidget(
+                              onAddressSelected: (address) {
+                                _onAddressSelected(address);
+                              },
+                              animationController:
+                                  _bottomSectionAnimationController,
+                            ),
                           ),
-                        if (_pickupAddress != null && _showRoute)
-                          Marker(
-                            point: _pickupAddress!.latLng,
-                            anchorPos: AnchorPos.align(AnchorAlign.top),
-                            rotate: true,
-                            builder: (context) {
-                              return Icon(
-                                Icons.location_history,
-                                color: colorScheme.primary,
-                                size: 40,
-                              );
-                            },
-                          ),
-                        if (_destinationAddress != null && _showRoute)
-                          Marker(
-                            point: _destinationAddress!.latLng,
-                            anchorPos: AnchorPos.align(AnchorAlign.top),
-                            rotate: true,
-                            builder: (context) {
-                              return Icon(
-                                Icons.location_history_rounded,
-                                color: colorScheme.primary,
-                                size: 40,
-                              );
-                            },
-                          ),
+                        ),
                       ],
                     ),
-                    if (state is MapRouteGot)
-                      PolylineLayerOptions(
-                        polylines: [
-                          Polyline(
-                            points: state.points,
-                            color: colorScheme.primary,
-                            strokeCap: StrokeCap.round,
-                            strokeWidth: 4,
-                          ),
-                        ],
-                      ),
-                  ],
-                );
-              },
-            ),
-
-            // Input and Destiantion Picker top widget
-            SingleChildScrollView(
-              child: SizedBox(
-                height: _showUpButton ? 260 : size.height,
-                width: double.infinity,
-                child: Column(
-                  children: [
-                    BlocBuilder<MapRouteCubit, MapRouteState>(
-                      builder: (context, state) {
-                        return ExpansionAnimationWidget(
-                          controller: _topSectionAnimationController,
-                          child: InputPickupAndDestinationLocationWidget(
-                            onDonePressed: _pickupAddress != null &&
-                                    _destinationAddress != null
-                                ? () => (state is MapRouteLoading)
-                                    ? null
-                                    : _onDonePressed()
-                                : null,
-                            pickupTextEditingController:
-                                _pickupTextEditingController,
-                            destinationTextEditingController:
-                                _destinationTextEditingController,
-                            pickupFocusNode: _pickupFocusNode,
-                            destinationFocusNode: _destinationFocusNode,
-                          ),
-                        );
-                      },
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: AddressListBottomWidget(
-                          onAddressSelected: (address) {
-                            _onAddressSelected(address);
-                          },
-                          animationController:
-                              _bottomSectionAnimationController,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ],
+
+                // Loading screen
+                if (rideDriverState is RideDriverLoading)
+                  Container(
+                    height: size.height,
+                    width: size.width,
+                    color: Colors.black26,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Finding driver for your ride',
+                          style: textTheme.bodyText1?.copyWith(
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
         floatingActionButton: _showUpButton
             ? FloatingActionButton(
