@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/errors/custom_exception.dart';
 import 'package:saffar_app/core/models/ride.dart';
+import 'package:saffar_app/core/models/ride_driver.dart';
 import 'package:saffar_app/core/service_locator.dart';
 
 /// Gets rides data
@@ -60,7 +61,7 @@ class RideRepo {
   }
 
   /// Gives Driver, drivers source position, drivers destination position
-  Future<Map<String, dynamic>> findRideDriver() async {
+  Future<RideDriver> findRideDriver() async {
     if (token == null) {
       throw throw CustomException.userNotLoggedIn();
     }
@@ -75,7 +76,10 @@ class RideRepo {
         ),
       );
 
-      return response.data;
+      final Map<String, dynamic> map = response.data as Map<String, dynamic>;
+      final RideDriver rideDriver = RideDriver.fromMap(map);
+
+      return rideDriver;
     } catch (e) {
       throw CustomException(message: e.toString());
     }
