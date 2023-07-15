@@ -35,4 +35,19 @@ class RideDriverCubit extends Cubit<RideDriverState> {
       },
     );
   }
+
+  void moveRiderByOnePoint() {
+    if (state is RideDriverGot) {
+      final RideDriverGot rideDriverGotState = state as RideDriverGot;
+
+
+      final List<LatLng> movedPoints =
+          rideDriverGotState.points.toList().sublist(1);
+
+      emit(RideDriverGot(
+        driver: rideDriverGotState.driver,
+        points: movedPoints,
+      ));
+    }
+  }
 }

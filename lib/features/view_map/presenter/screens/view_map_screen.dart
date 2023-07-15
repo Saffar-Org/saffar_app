@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -258,6 +260,14 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
         _showRoute = false;
         setState(() {});
+
+        Timer.periodic(const Duration(seconds: 2), (timer) {
+          if (rideDriverState.points.isNotEmpty) {
+            _rideDriverCubit.moveRiderByOnePoint();
+          } else {
+            timer.cancel();
+          }
+        });
       }
     });
   }
