@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/utils/view_helper.dart';
 import 'package:saffar_app/core/widgets/expansion_animation_widget.dart';
 import 'package:saffar_app/features/find_ride/presenter/cubits/ride_driver_cubit.dart';
+import 'package:saffar_app/features/find_ride/presenter/widgets/ride_driver_info_widget.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/map_route_cubit.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/searched_places_cubit.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/widgets/input_pickup_and_destination_location_widget.dart';
@@ -244,6 +246,8 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       }
     });
 
+    Timer? _timer;
+
     _rideDriverCubit.stream.listen((rideDriverState) {
       if (rideDriverState is RideDriverGot) {
         final LatLng vehicleSourcePosition = rideDriverState.points[0];
@@ -261,7 +265,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
         _showRoute = false;
         setState(() {});
 
-        Timer.periodic(const Duration(seconds: 2), (timer) {
+        _timer ??= Timer.periodic(const Duration(milliseconds: 300), (timer) {
           if (rideDriverState.points.isNotEmpty) {
             _rideDriverCubit.moveRiderByOnePoint();
           } else {
@@ -305,10 +309,10 @@ class _ViewMapScreenState extends State<ViewMapScreen>
         BlocProvider.value(value: _mapRouteCubit),
         BlocProvider.value(value: _rideDriverCubit),
       ],
-      child: Scaffold(
-        body: BlocBuilder<RideDriverCubit, RideDriverState>(
-          builder: (context, rideDriverState) {
-            return Stack(
+      child: BlocBuilder<RideDriverCubit, RideDriverState>(
+        builder: (context, rideDriverState) {
+          return Scaffold(
+            body: Stack(
               children: [
                 // Map
                 BlocBuilder<MapRouteCubit, MapRouteState>(
@@ -485,21 +489,44 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                     ),
                   ),
               ],
-            );
-          },
-        ),
-        floatingActionButton: _showUpButton
-            ? FloatingActionButton(
-                onPressed: () {
-                  _onShowUpButtonPressed();
-                },
-                backgroundColor: colorScheme.background,
-                child: Icon(
-                  Icons.keyboard_arrow_up_rounded,
-                  color: colorScheme.primary,
-                ),
-              )
-            : const SizedBox(),
+            ),
+            floatingActionButton: _showUpButton
+                ? FloatingActionButton(
+                    onPressed: () {
+                      _onShowUpButtonPressed();
+                    },
+                    backgroundColor: colorScheme.background,
+                    child: Icon(
+                      Icons.keyboard_arrow_up_rounded,
+                      color: colorScheme.primary,
+                    ),
+                  )
+                : const SizedBox(),
+            bottomSheet: rideDriverState is RideDriverGot
+                ? Container(
+                    height: 200,
+                    padding: const EdgeInsets.all(Nums.horizontalPadding),
+                    decoration: BoxDecoration(
+                      color: colorScheme.background,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(
+                          Nums.roundedCornerRadius,
+                        ),
+                        topRight: Radius.circular(
+                          Nums.roundedCornerRadius,
+                        ),
+                      ),
+                    ),
+                    child: RideDriverInfoWidget(
+                      driver: rideDriverState.driver,
+                    ),
+                  )
+                : const SizedBox(
+                    width: 0,
+                    height: 0,
+                  ),
+          );
+        },
       ),
     );
   }

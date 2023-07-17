@@ -40,9 +40,11 @@ class RideDriverCubit extends Cubit<RideDriverState> {
     if (state is RideDriverGot) {
       final RideDriverGot rideDriverGotState = state as RideDriverGot;
 
+      List<LatLng> movedPoints = [];
 
-      final List<LatLng> movedPoints =
-          rideDriverGotState.points.toList().sublist(1);
+      if (rideDriverGotState.points.length > 1) {
+        movedPoints = rideDriverGotState.points.toList().sublist(1);
+      }
 
       emit(RideDriverGot(
         driver: rideDriverGotState.driver,
