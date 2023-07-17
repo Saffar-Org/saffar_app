@@ -14,76 +14,78 @@ class RideDriverInfoWidget extends StatelessWidget {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    return Column(
+    return Row(
       children: [
-        Row(
-          children: [
-            // Driver image
-            Container(
-              height: 50,
-              width: 50,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(.4),
-                border: Border.all(
-                  width: 2,
-                  color: colorScheme.primary,
+        // Driver image
+        Container(
+          height: 100,
+          width: 100,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(.4),
+            shape: BoxShape.circle,
+            border: Border.all(
+              width: 2,
+              color: colorScheme.primary,
+            ),
+          ),
+          child: driver.imageUrl != null
+              ? Image.network(
+                  driver.imageUrl!,
+                  fit: BoxFit.cover,
+                )
+              : const Icon(
+                  Icons.person,
+                  size: 48,
+                  color: Colors.grey,
+                ),
+        ),
+        const SizedBox(width: 32),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Driver name
+              Text(
+                driver.name,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.headline5?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              child: driver.imageUrl != null
-                  ? Image.network(
-                      driver.imageUrl!,
-                      fit: BoxFit.cover,
-                    )
-                  : const Icon(
-                      Icons.person,
-                      color: Colors.grey,
-                    ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
+              const SizedBox(height: 8),
+              // Vehicle name
+              Text(
+                driver.vehicleName,
+                style: textTheme.bodyText2,
+              ),
+              // Vehicle number
+              Text(
+                driver.vehicleNumber,
+                style: textTheme.bodyText2,
+              ),
+              const SizedBox(height: 16),
+              Row(
                 children: [
-                  // Driver name
-                  Text(
-                    driver.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: textTheme.headline5?.copyWith(
-                      fontWeight: FontWeight.bold,
+                  // Phone icon
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Icon(Icons.call),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  // Vehicle name
-                  Text(
-                    driver.vehicleName,
-                    style: textTheme.bodyText2,
-                  ),
-                  // Vehicle number
-                  Text(
-                    driver.vehicleNumber,
-                    style: textTheme.bodyText2,
+                  const SizedBox(width: 16),
+                  // Share icon
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Icon(Icons.share),
+                    ),
                   ),
                 ],
               ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: const Icon(Icons.call),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: const Icon(Icons.call),
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

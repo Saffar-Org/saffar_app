@@ -64,6 +64,10 @@ class _ViewMapScreenState extends State<ViewMapScreen>
   }
 
   void _onDonePressed() async {
+    _showUpButton = false;
+    _bottomSectionAnimationController.removeListener(() {});
+    setState(() {});
+
     if (_pickupAddress != null && _destinationAddress != null) {
       final LatLng sourceLatLng = _pickupAddress!.latLng;
       final LatLng destinationLatLng = _destinationAddress!.latLng;
@@ -96,6 +100,18 @@ class _ViewMapScreenState extends State<ViewMapScreen>
         context,
         sourceLatLng,
       );
+
+      final RideDriverState rideDriverState = _rideDriverCubit.state;
+
+      if (rideDriverState is RideDriverGot) {
+        Timer.periodic(const Duration(milliseconds: 300), (timer) {
+          if (timer.tick < rideDriverState.points.length) {
+            _rideDriverCubit.moveRiderByOnePoint();
+          } else {
+            timer.cancel();
+          }
+        });
+      }
     }
 
     setState(() {});
@@ -246,8 +262,6 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       }
     });
 
-    Timer? _timer;
-
     _rideDriverCubit.stream.listen((rideDriverState) {
       if (rideDriverState is RideDriverGot) {
         final LatLng vehicleSourcePosition = rideDriverState.points[0];
@@ -259,19 +273,11 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
         _mapController.move(
           newCenterZoom.center,
-          newCenterZoom.zoom - .2,
+          newCenterZoom.zoom - 2,
         );
 
         _showRoute = false;
         setState(() {});
-
-        _timer ??= Timer.periodic(const Duration(milliseconds: 300), (timer) {
-          if (rideDriverState.points.isNotEmpty) {
-            _rideDriverCubit.moveRiderByOnePoint();
-          } else {
-            timer.cancel();
-          }
-        });
       }
     });
   }
@@ -505,6 +511,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
             bottomSheet: rideDriverState is RideDriverGot
                 ? Container(
                     height: 200,
+                    width: size.width,
                     padding: const EdgeInsets.all(Nums.horizontalPadding),
                     decoration: BoxDecoration(
                       color: colorScheme.background,
