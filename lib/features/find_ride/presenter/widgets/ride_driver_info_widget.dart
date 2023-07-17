@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:saffar_app/core/models/driver.dart';
+import 'package:saffar_app/features/find_ride/presenter/cubits/ride_driver_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RideDriverInfoWidget extends StatelessWidget {
   const RideDriverInfoWidget({
@@ -70,7 +72,9 @@ class RideDriverInfoWidget extends StatelessWidget {
                   // Phone icon
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.read<RideDriverCubit>().openCallerApp(driver.phone);
+                      },
                       child: const Icon(Icons.call),
                     ),
                   ),
