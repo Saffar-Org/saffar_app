@@ -57,6 +57,10 @@ class RideDriverCubit extends Cubit<RideDriverState> {
     }
   }
 
+  void emitRideDriverInitialState() {
+    emit(const RideDriverInitial());
+  }
+
   void openCallerApp(String phoneNumber) {
     _openCallerAppUsecase.call(phoneNumber);
   }

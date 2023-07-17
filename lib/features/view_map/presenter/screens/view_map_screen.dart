@@ -52,6 +52,10 @@ class _ViewMapScreenState extends State<ViewMapScreen>
   /// Show source to destination route of user
   bool _showRoute = false;
 
+  bool _showDemoRideCountDown = false;
+
+  int _countDownNumber = 10;
+
   void _onShowUpButtonPressed() {
     _topSectionAnimationController.reverse();
     _bottomSectionAnimationController.reverse();
@@ -108,6 +112,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
           if (timer.tick < rideDriverState.points.length) {
             _rideDriverCubit.moveRiderByOnePoint();
           } else {
+            _showStartDemoRideCountDown();
             timer.cancel();
           }
         });
@@ -140,6 +145,21 @@ class _ViewMapScreenState extends State<ViewMapScreen>
     _addressFromMap = false;
 
     setState(() {});
+  }
+
+  void _showStartDemoRideCountDown() {
+    _showDemoRideCountDown = true;
+
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (timer.tick <= 10) {
+        setState(() {
+          _countDownNumber = 10 - timer.tick;
+        });
+      } else {
+        _rideDriverCubit.emitRideDriverInitialState();
+        timer.cancel();
+      }
+    });
   }
 
   @override
@@ -514,7 +534,9 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                     width: size.width,
                     padding: const EdgeInsets.all(Nums.horizontalPadding),
                     decoration: BoxDecoration(
-                      color: colorScheme.background,
+                      color: _showDemoRideCountDown
+                          ? colorScheme.primary
+                          : colorScheme.background,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(
                           Nums.roundedCornerRadius,
@@ -524,9 +546,32 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                         ),
                       ),
                     ),
-                    child: RideDriverInfoWidget(
-                      driver: rideDriverState.driver,
-                    ),
+                    child: _showDemoRideCountDown
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Demo Ride starting in...',
+                                style: TextStyle(
+                                  color: colorScheme.onPrimary,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                '$_countDownNumber',
+                                style: TextStyle(
+                                  color: colorScheme.onPrimary,
+                                  fontSize: 64,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          )
+                        : RideDriverInfoWidget(
+                            driver: rideDriverState.driver,
+                          ),
                   )
                 : const SizedBox(
                     width: 0,

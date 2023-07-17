@@ -51,6 +51,9 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Palette.background,
           fontFamily: 'Nunito',
           hintColor: Palette.outline,
+          bottomSheetTheme: const BottomSheetThemeData(
+            backgroundColor: Colors.transparent,
+          ),
           snackBarTheme: const SnackBarThemeData(
             backgroundColor: Palette.primary,
             behavior: SnackBarBehavior.floating,
