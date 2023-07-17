@@ -82,7 +82,9 @@ class RideDriverInfoWidget extends StatelessWidget {
                   // Share icon
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.read<RideDriverCubit>().shareDriverInfo(driver);
+                      },
                       child: const Icon(Icons.share),
                     ),
                   ),

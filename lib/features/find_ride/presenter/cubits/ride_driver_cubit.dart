@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:saffar_app/core/utils/snackbar.dart';
 import 'package:saffar_app/features/find_ride/domain/usecases/find_ride_driver_usecase.dart';
 import 'package:saffar_app/features/find_ride/domain/usecases/open_caller_app_usecase.dart';
+import 'package:saffar_app/features/find_ride/domain/usecases/share_driver_info_usecase.dart';
 
 part 'ride_driver_state.dart';
 
@@ -13,6 +14,7 @@ class RideDriverCubit extends Cubit<RideDriverState> {
 
   final FindRideDriverUsecase _findRideDriverUsecase = FindRideDriverUsecase();
   final OpenCallerAppUsecase _openCallerAppUsecase = OpenCallerAppUsecase();
+  final ShareDriverInfoUsecase _shareDriverInfoUsecase = ShareDriverInfoUsecase();
 
   Future<void> findRideDriver(
     BuildContext context,
@@ -57,5 +59,9 @@ class RideDriverCubit extends Cubit<RideDriverState> {
 
   void openCallerApp(String phoneNumber) {
     _openCallerAppUsecase.call(phoneNumber);
+  }
+
+  void shareDriverInfo(Driver driver) {
+    _shareDriverInfoUsecase.call(driver);
   }
 }
