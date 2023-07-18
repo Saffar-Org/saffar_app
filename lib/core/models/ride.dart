@@ -1,3 +1,4 @@
+import 'package:saffar_app/core/models/driver.dart';
 import 'package:saffar_app/core/utils/model_helper.dart';
 
 import 'address.dart';
@@ -20,7 +21,7 @@ class Ride {
 
   final String id;
   final User user;
-  final dynamic driver; // TODO: Change type Driver model
+  final Driver driver;
   final Address sourceAddress;
   final Address destinationAddress;
   final DateTime startTime;
@@ -53,7 +54,7 @@ class Ride {
     return Ride(
       id: map['id'] as String,
       user: User.fromMap(map['user']),
-      driver: map['driver'], // TODO: Change to Driver.fromMap(map['driver'])
+      driver: Driver.fromMap(map['driver']),
       sourceAddress:
           Address.fromMap(map['source_address'] as Map<dynamic, dynamic>),
       destinationAddress:
@@ -74,7 +75,7 @@ class Ride {
     return {
       'id': id,
       'user': user.toMap(),
-      'driver': driver, // TODO: Change to driver.toMap()
+      'driver': driver.toMap(),
       'source_address': sourceAddress.toMap(),
       'destination_address': destinationAddress.toMap(),
       'start_time': startTime.toIso8601String(),
