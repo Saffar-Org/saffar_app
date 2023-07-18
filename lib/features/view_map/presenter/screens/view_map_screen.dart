@@ -6,7 +6,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/constants/strings.dart';
+import 'package:saffar_app/core/cubits/user_cubit.dart';
 import 'package:saffar_app/core/models/address.dart';
+import 'package:saffar_app/core/models/driver.dart';
+import 'package:saffar_app/core/models/user.dart';
 import 'package:saffar_app/core/utils/view_helper.dart';
 import 'package:saffar_app/core/widgets/expansion_animation_widget.dart';
 import 'package:saffar_app/features/find_ride/presenter/cubits/ride_driver_cubit.dart';
@@ -16,6 +19,7 @@ import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits
 import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/searched_places_cubit.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/widgets/input_pickup_and_destination_location_widget.dart';
 
+import '../../../../core/models/ride.dart';
 import '../widgets/address_list_bottom_widget.dart';
 
 class ViewMapScreen extends StatefulWidget {
@@ -57,6 +61,9 @@ class _ViewMapScreenState extends State<ViewMapScreen>
   bool _showDemoRideCountDown = false;
 
   int _countDownNumber = 10;
+
+  Timer? _driverPositionTimer;
+  Timer? _countDownTimer;
 
   void _onShowUpButtonPressed() {
     _topSectionAnimationController.reverse();
@@ -110,14 +117,17 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       final RideDriverState rideDriverState = _rideDriverCubit.state;
 
       if (rideDriverState is RideDriverGot) {
-        Timer.periodic(const Duration(milliseconds: 300), (timer) {
-          if (timer.tick < rideDriverState.points.length) {
-            _rideDriverCubit.moveRideDriverByOnePoint();
-          } else {
-            _showStartDemoRideCountDown();
-            timer.cancel();
-          }
-        });
+        _driverPositionTimer = Timer.periodic(
+          const Duration(milliseconds: 300),
+          (timer) {
+            if (timer.tick < rideDriverState.points.length) {
+              _rideDriverCubit.moveRideDriverByOnePoint();
+            } else {
+              _showStartDemoRideCountDown();
+              timer.cancel();
+            }
+          },
+        );
       }
     }
 
@@ -152,17 +162,20 @@ class _ViewMapScreenState extends State<ViewMapScreen>
   void _showStartDemoRideCountDown() {
     _showDemoRideCountDown = true;
 
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (timer.tick <= 10) {
-        setState(() {
-          _countDownNumber = 10 - timer.tick;
-        });
-      } else {
-        _rideDriverCubit.emitRideDriverInitialState();
-        _startRide();
-        timer.cancel();
-      }
-    });
+    _countDownTimer = Timer.periodic(
+      const Duration(seconds: 1),
+      (timer) {
+        if (timer.tick <= 10) {
+          setState(() {
+            _countDownNumber = 10 - timer.tick;
+          });
+        } else {
+          _rideDriverCubit.emitRideDriverInitialState();
+          _startRide();
+          timer.cancel();
+        }
+      },
+    );
   }
 
   void _startRide() async {
@@ -194,18 +207,43 @@ class _ViewMapScreenState extends State<ViewMapScreen>
     final RideState rideState = _rideCubit.state;
 
     if (rideState is RideActive) {
-      Timer.periodic(const Duration(milliseconds: 100), (timer) {
-        if (timer.tick < rideState.routePoints.length) {
-          _rideCubit.moveRiderByOnePoint();
-        } else {
-          _rideCubit.endRide();
-          timer.cancel();
-        }
-      });
+      _driverPositionTimer = Timer.periodic(
+        const Duration(milliseconds: 100),
+        (timer) {
+          if (timer.tick < rideState.routePoints.length) {
+            _rideCubit.moveRiderByOnePoint();
+          } else {
+            _rideCubit.endRide();
+            timer.cancel();
+          }
+        },
+      );
     }
 
     _showRoute = true;
     setState(() {});
+  }
+
+  void _onCancelRidePressed() {
+    final RideDriverState rideDriverState = _rideDriverCubit.state;
+
+    if (rideDriverState is RideDriverGot) {
+      final User user = context.read<UserCubit>().state.currentUser!;
+      final Driver driver = rideDriverState.driver;
+      final DateTime startTime = DateTime.now();
+
+      final Ride ride = _rideCubit.createRide(
+        user: user,
+        driver: driver,
+        sourceAddress: _pickupAddress!,
+        destinationAddress: _destinationAddress!,
+        startTime: startTime,
+        cancelled: true,
+        price: 0.0,
+      );
+
+      _rideCubit.addRide(ride);
+    }
   }
 
   @override
@@ -363,6 +401,9 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
     _pickupFocusNode.dispose();
     _destinationFocusNode.dispose();
+
+    _driverPositionTimer?.cancel();
+    _countDownTimer?.cancel();
 
     _searchedPlacesCubit.close();
     _mapRouteCubit.close();
@@ -643,6 +684,8 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                                 ],
                               )
                             : RideDriverInfoWidget(
+                                onCancelRidePressed: () =>
+                                    _onCancelRidePressed(),
                                 driver: rideDriverState.driver,
                               ),
                       )
