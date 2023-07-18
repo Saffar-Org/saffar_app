@@ -40,7 +40,7 @@ class RideDriverCubit extends Cubit<RideDriverState> {
     );
   }
 
-  void moveRiderByOnePoint() {
+  void moveRideDriverByOnePoint() {
     if (state is RideDriverGot) {
       final RideDriverGot rideDriverGotState = state as RideDriverGot;
 
