@@ -74,10 +74,10 @@ class Ride {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'user': user.toMap(),
-      'driver': driver.toMap(),
-      'source_address': sourceAddress.toMap(),
-      'destination_address': destinationAddress.toMap(),
+      'user_id': user.id,
+      'driver_id': driver.id,
+      'source_address_id': sourceAddress.id,
+      'destination_address_id': destinationAddress.id,
       'start_time': startTime.toIso8601String(),
       'end_time': endTime?.toIso8601String(),
       'cancelled': cancelled,

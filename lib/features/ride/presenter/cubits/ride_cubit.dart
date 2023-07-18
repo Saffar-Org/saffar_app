@@ -1,8 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:saffar_app/core/models/ride.dart';
+import 'package:saffar_app/core/usecases/create_ride_usecase.dart';
 import 'package:saffar_app/core/utils/snackbar.dart';
+import 'package:saffar_app/features/ride/domain/usecases/add_ride_usecase.dart';
 import 'package:saffar_app/features/ride/domain/usecases/get_ride_route_points_usecase.dart';
+
+import '../../../../core/models/address.dart';
+import '../../../../core/models/driver.dart';
+import '../../../../core/models/user.dart';
 
 part 'ride_state.dart';
 
@@ -11,6 +18,8 @@ class RideCubit extends Cubit<RideState> {
 
   final GetRideRoutePointsUsecase _getRideRoutePointsUsecase =
       GetRideRoutePointsUsecase();
+  final AddRideUsecase _addRideUsecase = AddRideUsecase();
+  final CreateRideUsecase _createRideUsecase = CreateRideUsecase();
 
   /// Initialized the Ride Active state with required
   /// values
@@ -63,5 +72,37 @@ class RideCubit extends Cubit<RideState> {
   /// Ends the ride
   void endRide() {
     emit(const RideCompleted());
+  }
+
+  /// Adds ride to DB
+  void addRide(Ride ride) async {
+    await _addRideUsecase.call(ride);
+  }
+
+  /// Creates an instance of the Ride model
+  Ride createRide({
+    required User user,
+    required Driver driver,
+    required Address sourceAddress,
+    required Address destinationAddress,
+    required DateTime startTime,
+    DateTime? endTime,
+    required bool cancelled,
+    required double price,
+    double? discountPrice,
+  }) {
+    final Ride ride = _createRideUsecase.call(
+      user: user,
+      driver: driver,
+      sourceAddress: sourceAddress,
+      destinationAddress: destinationAddress,
+      startTime: startTime,
+      endTime: endTime,
+      cancelled: cancelled,
+      price: price,
+      discountPrice: discountPrice,
+    );
+
+    return ride;
   }
 }

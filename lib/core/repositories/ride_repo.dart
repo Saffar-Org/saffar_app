@@ -93,4 +93,22 @@ class RideRepo {
       throw CustomException(message: e.toString());
     }
   }
+
+  Future<void> addRide(Ride ride) async {
+    try {
+      final Map<String, dynamic> rideMap = ride.toMap();
+
+      await _dio.post(
+        '${Strings.baseApiUrl}/ride/add_ride',
+        options: Options(
+          headers: {
+            'authorization': 'Bearer $token',
+          },
+        ),
+        data: rideMap,
+      );
+    } catch (e) {
+      throw CustomException(message: e.toString());
+    }
+  }
 }
