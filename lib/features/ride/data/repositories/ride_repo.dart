@@ -95,6 +95,10 @@ class RideRepo {
   }
 
   Future<void> addRide(Ride ride) async {
+    if (token == null) {
+      throw throw CustomException.userNotLoggedIn();
+    }
+
     try {
       final Map<String, dynamic> rideMap = ride.toMap();
 
@@ -107,6 +111,32 @@ class RideRepo {
         ),
         data: rideMap,
       );
+    } catch (e) {
+      throw CustomException(message: e.toString());
+    }
+  }
+
+  Future<double> getTotalRidePrice(double distanceInKm) async {
+    if (token == null) {
+      throw throw CustomException.userNotLoggedIn();
+    }
+
+    try {
+      final Response response = await _dio.post(
+        '${Strings.baseApiUrl}/ride/add_ride',
+        options: Options(
+          headers: {
+            'authorization': 'Bearer $token',
+          },
+        ),
+        data: {
+          'distance_in_km': distanceInKm,
+        },
+      );
+
+      final double totalPrice = response.data['total_price'];
+
+      return totalPrice;
     } catch (e) {
       throw CustomException(message: e.toString());
     }
