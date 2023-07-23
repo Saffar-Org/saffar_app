@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saffar_app/features/authentication/presenter/view/sign_in_screen.dart';
+import 'package:saffar_app/features/payment/presenter/screens/payment_screen.dart';
 import 'package:saffar_app/features/splash/presenter/screens/splash_screen.dart';
 import 'package:saffar_app/features/view_map/presenter/screens/view_map_screen.dart';
 
@@ -19,6 +20,10 @@ class CustomRouter {
   /// Generates routes for named navigation
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case PaymentScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => const PaymentScreen(),
+        );
       case ViewMapScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => const ViewMapScreen(),
