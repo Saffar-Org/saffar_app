@@ -29,8 +29,6 @@ class Address {
       [
         'id',
         'street',
-        'state',
-        'country',
         'lat',
         'lon',
       ],
