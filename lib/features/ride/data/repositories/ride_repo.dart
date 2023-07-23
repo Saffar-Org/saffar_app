@@ -116,6 +116,7 @@ class RideRepo {
     }
   }
 
+  /// Gets total ride price 
   Future<double> getTotalRidePrice(double distanceInKm) async {
     if (token == null) {
       throw throw CustomException.userNotLoggedIn();

@@ -39,4 +39,22 @@ class MapRouteRepo {
       throw CustomException(message: e.toString());
     }
   }
+
+  /// Gets the distance from source to destination in meters
+  Future<double> getDistanceInMetersFromSourceToDestination(
+    LatLng sourceLatLng,
+    LatLng destinationLatLng,
+  ) async {
+    try {
+      final Response response = await _dio.get(
+        'https://api.tomtom.com/routing/1/calculateRoute/${sourceLatLng.latitude},${sourceLatLng.longitude}:${destinationLatLng.latitude},${destinationLatLng.longitude}/json?key=${Strings.mapApiKey}',
+      );
+
+      final double distanceInMeters = response.data['routes'][0]['legs'][0]['summary']['lengthInMeters'];
+
+      return distanceInMeters;
+    } catch (e) {
+      throw CustomException(message: e.toString());
+    }
+  }
 }
