@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:saffar_app/core/repositories/ride_repo.dart';
+import 'package:saffar_app/features/ride/data/repositories/ride_repo.dart';
 import 'package:saffar_app/core/repositories/user_repo.dart';
 import 'package:saffar_app/core/services/validator_service.dart';
 import 'package:saffar_app/features/authentication/data/repositories/auth_repo.dart';
