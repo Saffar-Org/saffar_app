@@ -123,8 +123,8 @@ class RideRepo {
     }
 
     try {
-      final Response response = await _dio.post(
-        '${Strings.baseApiUrl}/ride/add_ride',
+      final Response response = await _dio.get(
+        '${Strings.baseApiUrl}/ride/total_price',
         options: Options(
           headers: {
             'authorization': 'Bearer $token',

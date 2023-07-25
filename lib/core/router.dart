@@ -22,7 +22,10 @@ class CustomRouter {
     switch (settings.name) {
       case PaymentScreen.routeName:
         return MaterialPageRoute(
-          builder: (_) => const PaymentScreen(),
+          builder: (_) => PaymentScreen(
+            paymentScreenArguments:
+                settings.arguments as PaymentScreenArguments,
+          ),
         );
       case ViewMapScreen.routeName:
         return MaterialPageRoute(

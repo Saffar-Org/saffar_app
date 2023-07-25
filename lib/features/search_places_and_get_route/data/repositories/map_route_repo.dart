@@ -50,9 +50,19 @@ class MapRouteRepo {
         'https://api.tomtom.com/routing/1/calculateRoute/${sourceLatLng.latitude},${sourceLatLng.longitude}:${destinationLatLng.latitude},${destinationLatLng.longitude}/json?key=${Strings.mapApiKey}',
       );
 
-      final double distanceInMeters = response.data['routes'][0]['legs'][0]['summary']['lengthInMeters'];
+      final double? distanceInMeters = double.tryParse(
+        response.data['routes'][0]['legs'][0]['summary']['lengthInMeters']
+            .toString(),
+      );
 
-      return distanceInMeters;
+      if (distanceInMeters != null) {
+        return distanceInMeters;
+      }
+
+      throw const CustomException(
+        message:
+            'There was some problem in getting distance from source to destination.',
+      );
     } catch (e) {
       throw CustomException(message: e.toString());
     }

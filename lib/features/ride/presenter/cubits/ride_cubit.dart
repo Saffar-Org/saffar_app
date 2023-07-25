@@ -66,6 +66,15 @@ class RideCubit extends Cubit<RideState> {
           currentPosition: nextPosition,
         ));
       }
+
+      if (nextIndex == rideActive.routePoints.length - 1) {
+        Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            emit(const RideCompleted());
+          },
+        );
+      }
     }
   }
 

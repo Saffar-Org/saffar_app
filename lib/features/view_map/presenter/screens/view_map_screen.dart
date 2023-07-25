@@ -14,6 +14,7 @@ import 'package:saffar_app/core/utils/view_helper.dart';
 import 'package:saffar_app/core/widgets/expansion_animation_widget.dart';
 import 'package:saffar_app/features/find_ride/presenter/cubits/ride_driver_cubit.dart';
 import 'package:saffar_app/features/find_ride/presenter/widgets/ride_driver_info_widget.dart';
+import 'package:saffar_app/features/payment/presenter/screens/payment_screen.dart';
 import 'package:saffar_app/features/ride/presenter/cubits/ride_cubit.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/map_route_cubit.dart';
 import 'package:saffar_app/features/search_places_and_get_route/presenter/cubits/searched_places_cubit.dart';
@@ -61,6 +62,8 @@ class _ViewMapScreenState extends State<ViewMapScreen>
   bool _showDemoRideCountDown = false;
 
   int _countDownNumber = 10;
+
+  late final DateTime _startTime;
 
   Timer? _driverPositionTimer;
   Timer? _countDownTimer;
@@ -118,7 +121,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
       if (rideDriverState is RideDriverGot) {
         _driverPositionTimer = Timer.periodic(
-          const Duration(milliseconds: 300),
+          const Duration(milliseconds: 100),
           (timer) {
             if (timer.tick < rideDriverState.points.length) {
               _rideDriverCubit.moveRideDriverByOnePoint();
@@ -170,7 +173,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
             _countDownNumber = 10 - timer.tick;
           });
         } else {
-          _rideDriverCubit.emitRideDriverInitialState();
+          _showDemoRideCountDown = false;
           _startRide();
           timer.cancel();
         }
@@ -179,6 +182,8 @@ class _ViewMapScreenState extends State<ViewMapScreen>
   }
 
   void _startRide() async {
+    _startTime = DateTime.now();
+
     if (_pickupAddress == null || _destinationAddress == null) {
       return;
     }
@@ -383,6 +388,27 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
         _showRoute = false;
         setState(() {});
+      }
+    });
+
+    _rideCubit.stream.listen((rideState) {
+      final RideDriverState rideDriverState = _rideDriverCubit.state;
+
+      if (rideState is RideCompleted && rideDriverState is RideDriverGot) {
+        final Driver driver = rideDriverState.driver;
+
+        _rideDriverCubit.emitRideDriverInitialState();
+
+        Navigator.pushReplacementNamed(
+          context,
+          PaymentScreen.routeName,
+          arguments: PaymentScreenArguments(
+            driver: driver,
+            sourceAddress: _pickupAddress!,
+            destinationAddress: _destinationAddress!,
+            startTime: _startTime,
+          ),
+        );
       }
     });
   }
@@ -642,7 +668,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                         ),
                       )
                     : const SizedBox(),
-                bottomSheet: rideDriverState is RideDriverGot
+                bottomSheet: rideDriverState is RideDriverGot && rideState is! RideActive
                     ? Container(
                         height: 200,
                         width: size.width,
