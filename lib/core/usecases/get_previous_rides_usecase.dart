@@ -20,7 +20,7 @@ class GetPreviousRidesUsecase {
       final List<Ride> previousRides = await _rideRepo.getPreviousRides();
 
       // Sorting previous rides in descending order according to its start time 
-      previousRides.sort((r1, r2) => r1.startTime.compareTo(r2.startTime));
+      previousRides.sort((r1, r2) => -1 * r1.startTime.compareTo(r2.startTime));
 
       final List<Ride> previousRidesWithoutCancellation =
           previousRides.where((ride) => ride.cancelled == false).toList();
