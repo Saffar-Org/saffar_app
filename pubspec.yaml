@@ -37,6 +37,7 @@ dependencies:
   flutter_map: ^2.2.0
   get_it: ^7.6.0
   hive_flutter: ^1.1.0
+  location: ^4.4.0
   share_plus: ^4.5.3
   url_launcher: ^6.1.5
   uuid: ^3.0.7
