@@ -118,11 +118,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 // Where do you want to go Container Button
                 GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      ViewMapScreen.routeName,
-                    );
+                  onTap: () async {
+                    final bool locationEnabled = await _homeCubit
+                        .requestLocationPermissionAndEnableLocation(context);
+
+                    if (locationEnabled) {
+                      Navigator.pushNamed(
+                        context,
+                        ViewMapScreen.routeName,
+                      );
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.all(16),
@@ -337,7 +342,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     // Share location poster
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        _homeCubit.requestLocationPermissionAndEnableLocation(
+                          context,
+                          showLocationAlreadyOnMessage: true,
+                        );
+                      },
                       child: ClipRRect(
                         borderRadius: const BorderRadius.all(
                           Radius.circular(

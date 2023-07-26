@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:saffar_app/features/location/data/repositories/location_repo.dart';
 import 'package:saffar_app/features/ride/data/repositories/ride_repo.dart';
 import 'package:saffar_app/core/repositories/user_repo.dart';
 import 'package:saffar_app/core/services/validator_service.dart';
@@ -26,4 +27,5 @@ Future<void> setUpServices() async {
   sl.registerSingleton<RideRepo>(RideRepo());
   sl.registerSingleton<SearchPlacesRepo>(SearchPlacesRepo());
   sl.registerSingleton<MapRouteRepo>(MapRouteRepo());
+  sl.registerSingleton<LocationRepo>(LocationRepo());
 }
