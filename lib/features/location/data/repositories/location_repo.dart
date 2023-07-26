@@ -1,5 +1,6 @@
 import 'package:location/location.dart';
 import 'package:saffar_app/features/location/data/enums/location_permission_status.dart';
+import 'package:latlong2/latlong.dart';
 
 class LocationRepo {
   final Location _location = Location();
@@ -22,7 +23,8 @@ class LocationRepo {
 
   /// Shows dialog to request permission from the user
   Future<LocationPermissionStatus> requestPermission() async {
-    final PermissionStatus permissionStatus = await _location.requestPermission();
+    final PermissionStatus permissionStatus =
+        await _location.requestPermission();
 
     switch (permissionStatus) {
       case PermissionStatus.granted:
@@ -44,5 +46,18 @@ class LocationRepo {
   /// Shows the dialog box to request current location of user
   Future<bool> requestEnableLocation() {
     return _location.requestService();
+  }
+
+  /// Gets the users current location. If can not get lat lng then null is
+  /// returned
+  Future<LatLng?> getCurrentLatLng() async {
+    final LocationData locationData = await _location.getLocation();
+
+    if (locationData.latitude != null && locationData.longitude != null) {
+      return LatLng(
+        locationData.latitude!,
+        locationData.longitude!,
+      );
+    }
   }
 }

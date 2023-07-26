@@ -23,10 +23,23 @@ import 'package:saffar_app/features/search_places_and_get_route/presenter/widget
 import '../../../../core/models/ride.dart';
 import '../widgets/address_list_bottom_widget.dart';
 
+class ViewMapScreenArguments {
+  const ViewMapScreenArguments({
+    required this.initialPosition,
+  });
+
+  final LatLng? initialPosition;
+}
+
 class ViewMapScreen extends StatefulWidget {
-  const ViewMapScreen({Key? key}) : super(key: key);
+  const ViewMapScreen({
+    Key? key,
+    required this.viewMapScreenArguments,
+  }) : super(key: key);
 
   static const String routeName = '/view_map';
+
+  final ViewMapScreenArguments viewMapScreenArguments;
 
   @override
   State<ViewMapScreen> createState() => _ViewMapScreenState();
@@ -463,7 +476,14 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                         return FlutterMap(
                           mapController: _mapController,
                           options: MapOptions(
-                            center: LatLng(22.5726, 88.3639),
+                            center: LatLng(
+                              widget.viewMapScreenArguments.initialPosition
+                                      ?.latitude ??
+                                  22.5726,
+                              widget.viewMapScreenArguments.initialPosition
+                                      ?.longitude ??
+                                  88.3639,
+                            ),
                             zoom: 13, // 0 to 22 where 0 is whole Earth
                           ),
                           layers: [
@@ -668,7 +688,8 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                         ),
                       )
                     : const SizedBox(),
-                bottomSheet: rideDriverState is RideDriverGot && rideState is! RideActive
+                bottomSheet: rideDriverState is RideDriverGot &&
+                        rideState is! RideActive
                     ? Container(
                         height: 200,
                         width: size.width,

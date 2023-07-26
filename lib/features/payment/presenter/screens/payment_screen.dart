@@ -102,7 +102,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           const SizedBox(height: 32),
                           Text(
                             '\u{20B9} ${totalPrice.toStringAsFixed(2)}',
-                            style: textTheme.headline1?.copyWith(
+                            style: textTheme.headline2?.copyWith(
                               color: colorScheme.onPrimary,
                               fontWeight: FontWeight.bold,
                             ),

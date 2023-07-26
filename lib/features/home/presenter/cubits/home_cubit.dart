@@ -3,17 +3,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:saffar_app/core/cubits/user_cubit.dart';
 import 'package:saffar_app/core/usecases/init_rides_repo_usecase.dart';
 import 'package:saffar_app/core/utils/snackbar.dart';
+import 'package:saffar_app/features/location/domain/usecases/get_current_lat_lng_usecase.dart';
 import 'package:saffar_app/features/location/domain/usecases/request_location_permission_and_enable_location_usecase.dart';
+import 'package:latlong2/latlong.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(HomeInitial());
+  HomeCubit() : super(const HomeInitial());
 
   final InitRidesRepoUsecase _initRidesRepoUsecase = InitRidesRepoUsecase();
   final RequestLocationPermissionAndEnableLocationUsecase
       _requestLocationPermissionAndEnableLocationUsecase =
       RequestLocationPermissionAndEnableLocationUsecase();
+  final GetCurrentLatLngUsecase _getCurrentLatLngUsecase = GetCurrentLatLngUsecase();
 
   void initHomeCubit(BuildContext context) {
     final String? token = context.read<UserCubit>().state.token;
@@ -40,5 +43,15 @@ class HomeCubit extends Cubit<HomeState> {
     }
 
     return true;
+  }
+
+  Future<LatLng?> getCurrentLatLng() async {
+    emit(const HomeLoading());
+
+    final LatLng? currentPosition = await _getCurrentLatLngUsecase.call();
+
+    emit(const HomeInitial());
+
+    return currentPosition;
   }
 }

@@ -29,7 +29,10 @@ class CustomRouter {
         );
       case ViewMapScreen.routeName:
         return MaterialPageRoute(
-          builder: (_) => const ViewMapScreen(),
+          builder: (_) => ViewMapScreen(
+            viewMapScreenArguments:
+                settings.arguments as ViewMapScreenArguments,
+          ),
         );
       case SplashScreen.routeName:
         return MaterialPageRoute(
