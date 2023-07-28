@@ -92,7 +92,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _razorpay.on(
       Razorpay.EVENT_PAYMENT_ERROR,
       (PaymentFailureResponse response) {
-        Snackbar.of(context).show('Payment failed. Please try again.');
+        Snackbar.of(context).show(
+          'Payment failed. Please try again.',
+          bgColor: Theme.of(context).colorScheme.onPrimary,
+          textColor: Theme.of(context).colorScheme.primary,
+        );
       },
     );
   }
