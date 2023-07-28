@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/cubits/previous_rides_cubit.dart';
+import 'package:saffar_app/core/cubits/user_cubit.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/widgets/address_widget.dart';
 import 'package:saffar_app/features/home/presenter/cubits/home_cubit.dart';
 import 'package:saffar_app/features/view_map/presenter/screens/view_map_screen.dart';
-import 'package:latlong2/latlong.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -37,8 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final double statusBarHeight = MediaQuery.of(context).padding.top;
 
-    final String? userImageUrl =
-        'https://www.shutterstock.com/image-photo/head-shot-portrait-close-smiling-260nw-1714666150.jpg';
+    final String? userImageUrl = context.read<UserCubit>().state.currentUser?.imageUrl;
 
     return BlocProvider<HomeCubit>.value(
       value: _homeCubit,
@@ -133,14 +132,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                       context);
 
                               if (locationEnabled) {
-                                final LatLng? currentPosition =
-                                    await _homeCubit.getCurrentLatLng();
+                                final Address? currentAddress =
+                                    await _homeCubit.getCurrentAddress();
 
                                 Navigator.pushNamed(
                                   context,
                                   ViewMapScreen.routeName,
                                   arguments: ViewMapScreenArguments(
-                                    initialPosition: currentPosition,
+                                    initialAddress: currentAddress,
                                   ),
                                 );
                               }

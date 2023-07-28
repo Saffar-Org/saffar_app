@@ -25,10 +25,10 @@ import '../widgets/address_list_bottom_widget.dart';
 
 class ViewMapScreenArguments {
   const ViewMapScreenArguments({
-    required this.initialPosition,
+    required this.initialAddress,
   });
 
-  final LatLng? initialPosition;
+  final Address? initialAddress;
 }
 
 class ViewMapScreen extends StatefulWidget {
@@ -275,7 +275,15 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
     _mapController = MapController();
 
-    _pickupTextEditingController = TextEditingController();
+    final String? initialPickUpAddressString = widget
+                .viewMapScreenArguments.initialAddress !=
+            null
+        ? ViewHelper.getAddress(widget.viewMapScreenArguments.initialAddress!)
+        : null;
+
+    _pickupTextEditingController = TextEditingController(
+      text: initialPickUpAddressString ?? '',
+    );
     _destinationTextEditingController = TextEditingController();
 
     _pickupFocusNode = FocusNode();
@@ -424,6 +432,8 @@ class _ViewMapScreenState extends State<ViewMapScreen>
         );
       }
     });
+
+    _pickupAddress = widget.viewMapScreenArguments.initialAddress;
   }
 
   @override
@@ -477,11 +487,11 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                           mapController: _mapController,
                           options: MapOptions(
                             center: LatLng(
-                              widget.viewMapScreenArguments.initialPosition
-                                      ?.latitude ??
+                              widget.viewMapScreenArguments.initialAddress
+                                      ?.latLng.latitude ??
                                   22.5726,
-                              widget.viewMapScreenArguments.initialPosition
-                                      ?.longitude ??
+                              widget.viewMapScreenArguments.initialAddress
+                                      ?.latLng.longitude ??
                                   88.3639,
                             ),
                             zoom: 13, // 0 to 22 where 0 is whole Earth
