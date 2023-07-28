@@ -33,7 +33,7 @@ class ViewHelper {
     return res;
   }
 
-  /// Returns place is place is not null else returns street.
+  /// Returns place if place is not null else returns street.
   static String getAddressPlace(Address address) {
     return address.place ?? address.street;
   }
