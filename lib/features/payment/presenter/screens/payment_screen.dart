@@ -203,7 +203,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               const SizedBox(width: 16),
                               ElevatedButton(
                                 onPressed: () {
-                                  _paymentCubit.payViaRazorpay();
+                                  _paymentCubit.payViaRazorpay(context);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: colorScheme.onPrimary,

@@ -1,6 +1,6 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:meta/meta.dart';
+import 'package:saffar_app/core/cubits/user_cubit.dart';
 import 'package:saffar_app/core/usecases/create_ride_usecase.dart';
 import 'package:saffar_app/features/payment/domain/usecases/get_total_ride_price_usecase.dart';
 import 'package:latlong2/latlong.dart';
@@ -72,12 +72,17 @@ class PaymentCubit extends Cubit<PaymentState> {
     emit(const PaymentComplete());
   }
 
-  void payViaRazorpay() async {
+  void payViaRazorpay(BuildContext context) async {
     if (state is PaymentInitial) {
       final PaymentInitial paymentInitialState = state as PaymentInitial;
       final double amount = paymentInitialState.price;
 
-      _payViaRazorpayUsecase.call(amount);
+      final String phone = context.read<UserCubit>().state.currentUser!.phone;
+
+      _payViaRazorpayUsecase.call(
+        amount,
+        phone,
+      );
     }
   }
 }
