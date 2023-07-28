@@ -209,7 +209,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   primary: colorScheme.onPrimary,
                                 ),
                                 child: Text(
-                                  'QR Payment',
+                                  'Online',
                                   style: TextStyle(
                                     color: colorScheme.primary,
                                     fontWeight: FontWeight.bold,
