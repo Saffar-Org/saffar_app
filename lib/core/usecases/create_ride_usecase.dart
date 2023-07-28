@@ -20,6 +20,11 @@ class CreateRideUsecase {
   }) {
     final String id = const Uuid().v4();
 
+    final double finalPrice = double.parse(price.toStringAsExponential(2));
+    final double? finalDiscountPrice = discountPrice != null
+        ? double.parse(discountPrice.toStringAsExponential(2))
+        : null;
+
     return Ride(
       id: id,
       user: user,
@@ -29,8 +34,8 @@ class CreateRideUsecase {
       startTime: startTime,
       endTime: endTime,
       cancelled: cancelled,
-      price: price,
-      discountPrice: discountPrice,
+      price: finalPrice,
+      discountPrice: finalDiscountPrice,
     );
   }
 }

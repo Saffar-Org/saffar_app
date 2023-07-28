@@ -26,7 +26,9 @@ class GetTotalRidePriceUsecase {
 
       final double totalRidePrice = await _rideRepo.getTotalRidePrice(distanceInKm);
 
-      return Right(totalRidePrice);
+      final double finalTotalRidePrice = double.parse(totalRidePrice.toStringAsExponential(2));
+
+      return Right(finalTotalRidePrice);
     } on CustomException catch (e) {
       return Left(Failure.fromCustomException(e));
     }
