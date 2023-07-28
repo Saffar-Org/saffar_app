@@ -9,9 +9,21 @@ abstract class PaymentState {
 class PaymentInitial extends PaymentState {
   const PaymentInitial({
     required this.price,
+    this.onlineButtonLoading = false,
   });
 
   final double price;
+  final bool onlineButtonLoading;
+
+  PaymentInitial copyWith({
+    double? price,
+    bool? onlineButtonLoading,
+  }) {
+    return PaymentInitial(
+      price: price ?? this.price,
+      onlineButtonLoading: onlineButtonLoading ?? this.onlineButtonLoading,
+    );
+  }
 }
 
 // When getting price or payment in ongoing

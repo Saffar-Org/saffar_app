@@ -4,11 +4,11 @@ import 'package:saffar_app/features/payment/data/repositories/razorpay_repo.dart
 class PayViaRazorpayUsecase {
   final RazorpayRepo _razorpayRepo = sl<RazorpayRepo>();
 
-  void call(
+  Future<void> call(
     double amount,
     String phone,
-  ) async {
-    _razorpayRepo.payViaRazorpay(
+  ) {
+    return _razorpayRepo.payViaRazorpay(
       amount,
       phone,
     );

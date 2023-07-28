@@ -111,8 +111,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return BlocProvider.value(
       value: _paymentCubit,
       child: BlocBuilder<PaymentCubit, PaymentState>(
-        builder: (context, state) {
-          final double totalPrice = state is PaymentInitial ? state.price : 0;
+        builder: (context, paymentState) {
+          final double totalPrice =
+              paymentState is PaymentInitial ? paymentState.price : 0;
 
           return WillPopScope(
             onWillPop: () async {
@@ -120,7 +121,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             },
             child: Scaffold(
               backgroundColor: colorScheme.primary,
-              body: (state is PaymentInitial)
+              body: (paymentState is PaymentInitial)
                   ? SizedBox(
                       height: size.height,
                       child: Column(
@@ -166,24 +167,29 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     final DateTime endTime = DateTime.now();
 
                                     return ElevatedButton(
-                                      onPressed: () {
-                                        _paymentCubit.addRide(
-                                          user: userState.currentUser!,
-                                          driver: widget
-                                              .paymentScreenArguments.driver,
-                                          sourceAddress: widget
-                                              .paymentScreenArguments
-                                              .sourceAddress,
-                                          destinationAddress: widget
-                                              .paymentScreenArguments
-                                              .destinationAddress,
-                                          startTime: widget
-                                              .paymentScreenArguments.startTime,
-                                          endTime: endTime,
-                                          cancelled: false,
-                                          price: state.price,
-                                        );
-                                      },
+                                      onPressed: paymentState
+                                              .onlineButtonLoading
+                                          ? null
+                                          : () {
+                                              _paymentCubit.addRide(
+                                                user: userState.currentUser!,
+                                                driver: widget
+                                                    .paymentScreenArguments
+                                                    .driver,
+                                                sourceAddress: widget
+                                                    .paymentScreenArguments
+                                                    .sourceAddress,
+                                                destinationAddress: widget
+                                                    .paymentScreenArguments
+                                                    .destinationAddress,
+                                                startTime: widget
+                                                    .paymentScreenArguments
+                                                    .startTime,
+                                                endTime: endTime,
+                                                cancelled: false,
+                                                price: paymentState.price,
+                                              );
+                                            },
                                       style: ElevatedButton.styleFrom(
                                         primary: colorScheme.onPrimary,
                                       ),
@@ -202,14 +208,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                               const SizedBox(width: 16),
                               ElevatedButton(
-                                onPressed: () {
-                                  _paymentCubit.payViaRazorpay(context);
-                                },
+                                onPressed: paymentState.onlineButtonLoading
+                                    ? null
+                                    : () {
+                                        _paymentCubit.payViaRazorpay(context);
+                                      },
                                 style: ElevatedButton.styleFrom(
                                   primary: colorScheme.onPrimary,
                                 ),
                                 child: Text(
-                                  'Online',
+                                  paymentState.onlineButtonLoading
+                                      ? '...'
+                                      : 'Online',
                                   style: TextStyle(
                                     color: colorScheme.primary,
                                     fontWeight: FontWeight.bold,
@@ -221,7 +231,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         ],
                       ),
                     )
-                  : (state is PaymentLoading)
+                  : (paymentState is PaymentLoading)
                       ? Center(
                           child: CircularProgressIndicator(
                             color: colorScheme.onPrimary,

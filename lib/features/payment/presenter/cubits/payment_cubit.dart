@@ -75,14 +75,19 @@ class PaymentCubit extends Cubit<PaymentState> {
   void payViaRazorpay(BuildContext context) async {
     if (state is PaymentInitial) {
       final PaymentInitial paymentInitialState = state as PaymentInitial;
+
+      emit(paymentInitialState.copyWith(onlineButtonLoading: true));
+
       final double amount = paymentInitialState.price;
 
       final String phone = context.read<UserCubit>().state.currentUser!.phone;
 
-      _payViaRazorpayUsecase.call(
+      await _payViaRazorpayUsecase.call(
         amount,
         phone,
       );
+
+      emit(paymentInitialState.copyWith(onlineButtonLoading: false));
     }
   }
 }

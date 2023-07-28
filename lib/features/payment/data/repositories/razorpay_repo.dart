@@ -11,7 +11,7 @@ class RazorpayRepo {
   final Dio _dio = sl<Dio>();
   final Razorpay _razorpay = sl<Razorpay>();
 
-  void payViaRazorpay(
+  Future<void> payViaRazorpay(
     double amount,
     String phone,
   ) async {
