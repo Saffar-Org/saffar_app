@@ -620,7 +620,7 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                     // Input and Destiantion Picker top widget
                     SingleChildScrollView(
                       child: SizedBox(
-                        height: _showUpButton ? 260 : size.height,
+                        height: _showUpButton ? 300 : size.height,
                         width: double.infinity,
                         child: Column(
                           children: [
