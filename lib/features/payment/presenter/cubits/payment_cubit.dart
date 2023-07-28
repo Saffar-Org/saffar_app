@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:saffar_app/core/usecases/create_ride_usecase.dart';
 import 'package:saffar_app/features/payment/domain/usecases/get_total_ride_price_usecase.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:saffar_app/features/payment/domain/usecases/pay_via_razorpay_usecase.dart';
 import 'package:saffar_app/features/ride/domain/usecases/add_ride_usecase.dart';
 
 import '../../../../core/models/address.dart';
@@ -19,6 +21,7 @@ class PaymentCubit extends Cubit<PaymentState> {
       GetTotalRidePriceUsecase();
   final CreateRideUsecase _createRideUsecase = CreateRideUsecase();
   final AddRideUsecase _addRideUsecase = AddRideUsecase();
+  final PayViaRazorpayUsecase _payViaRazorpayUsecase = PayViaRazorpayUsecase();
 
   void getTotalRidePrice(
     LatLng sourcePosition,
@@ -67,5 +70,14 @@ class PaymentCubit extends Cubit<PaymentState> {
     await _addRideUsecase.call(ride);
 
     emit(const PaymentComplete());
+  }
+
+  void payViaRazorpay() async {
+    if (state is PaymentInitial) {
+      final PaymentInitial paymentInitialState = state as PaymentInitial;
+      final double amount = paymentInitialState.price;
+
+      _payViaRazorpayUsecase.call(amount);
+    }
   }
 }
