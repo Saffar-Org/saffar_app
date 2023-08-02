@@ -122,7 +122,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          // TODO: Saffar logo
                           const Text(
                             'Saffar',
                             style: TextStyle(

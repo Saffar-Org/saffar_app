@@ -100,7 +100,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        // TODO: Saffar logo
                         const Text(
                           'Saffar',
                           style: TextStyle(
