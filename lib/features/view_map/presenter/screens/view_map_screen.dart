@@ -25,10 +25,12 @@ import '../widgets/address_list_bottom_widget.dart';
 
 class ViewMapScreenArguments {
   const ViewMapScreenArguments({
-    required this.initialAddress,
+    this.initialPickupAddress,
+    this.initialDestinationAddress,
   });
 
-  final Address? initialAddress;
+  final Address? initialPickupAddress;
+  final Address? initialDestinationAddress;
 }
 
 class ViewMapScreen extends StatefulWidget {
@@ -275,16 +277,25 @@ class _ViewMapScreenState extends State<ViewMapScreen>
 
     _mapController = MapController();
 
-    final String? initialPickUpAddressString = widget
-                .viewMapScreenArguments.initialAddress !=
-            null
-        ? ViewHelper.getAddress(widget.viewMapScreenArguments.initialAddress!)
-        : null;
+    final String? initialPickUpAddressString =
+        widget.viewMapScreenArguments.initialPickupAddress != null
+            ? ViewHelper.getAddress(
+                widget.viewMapScreenArguments.initialPickupAddress!,
+              )
+            : null;
+    final String? initialDestinationAddressString =
+        widget.viewMapScreenArguments.initialDestinationAddress != null
+            ? ViewHelper.getAddress(
+                widget.viewMapScreenArguments.initialDestinationAddress!,
+              )
+            : null;
 
     _pickupTextEditingController = TextEditingController(
       text: initialPickUpAddressString ?? '',
     );
-    _destinationTextEditingController = TextEditingController();
+    _destinationTextEditingController = TextEditingController(
+      text: initialDestinationAddressString ?? '',
+    );
 
     _pickupFocusNode = FocusNode();
     _destinationFocusNode = FocusNode();
@@ -433,7 +444,9 @@ class _ViewMapScreenState extends State<ViewMapScreen>
       }
     });
 
-    _pickupAddress = widget.viewMapScreenArguments.initialAddress;
+    _pickupAddress = widget.viewMapScreenArguments.initialPickupAddress;
+    _destinationAddress =
+        widget.viewMapScreenArguments.initialDestinationAddress;
   }
 
   @override
@@ -487,10 +500,10 @@ class _ViewMapScreenState extends State<ViewMapScreen>
                           mapController: _mapController,
                           options: MapOptions(
                             center: LatLng(
-                              widget.viewMapScreenArguments.initialAddress
+                              widget.viewMapScreenArguments.initialPickupAddress
                                       ?.latLng.latitude ??
                                   22.5726,
-                              widget.viewMapScreenArguments.initialAddress
+                              widget.viewMapScreenArguments.initialPickupAddress
                                       ?.latLng.longitude ??
                                   88.3639,
                             ),

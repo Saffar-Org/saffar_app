@@ -146,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       context,
                                       ViewMapScreen.routeName,
                                       arguments: ViewMapScreenArguments(
-                                        initialAddress: currentAddress,
+                                        initialPickupAddress: currentAddress,
                                       ),
                                     );
                                   }
@@ -357,12 +357,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 index]
                                                             .destinationAddress;
 
-                                                        return AddressWidget(
-                                                          address: address,
-                                                          showDivider: index !=
-                                                              state.latestTwoPreviousRidesWithoutCancellation
-                                                                      .length -
-                                                                  1,
+                                                        return GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.pushNamed(
+                                                              context,
+                                                              ViewMapScreen
+                                                                  .routeName,
+                                                              arguments:
+                                                                  ViewMapScreenArguments(
+                                                                initialDestinationAddress:
+                                                                    address,
+                                                              ),
+                                                            );
+                                                          },
+                                                          child: AddressWidget(
+                                                            address: address,
+                                                            showDivider: index !=
+                                                                state.latestTwoPreviousRidesWithoutCancellation
+                                                                        .length -
+                                                                    1,
+                                                          ),
                                                         );
                                                       },
                                                     ),
