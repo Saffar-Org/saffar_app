@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:saffar_app/core/cubits/user_cubit.dart';
+import 'package:saffar_app/features/user/presenter/cubits/user_cubit.dart';
 import 'package:saffar_app/features/splash/domain/init_splash_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

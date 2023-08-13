@@ -2,7 +2,7 @@ import 'package:saffar_app/core/models/driver.dart';
 import 'package:saffar_app/core/utils/model_helper.dart';
 
 import 'address.dart';
-import 'user.dart';
+import '../../features/user/data/models/user.dart';
 
 /// Ride from a taxi from source to destination.
 class Ride {

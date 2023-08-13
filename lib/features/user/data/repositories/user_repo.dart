@@ -6,9 +6,9 @@ class UserRepo {
   final HiveInterface _hive = sl<HiveInterface>();
   late final Box? _userBox;
 
-  /// Initialize User Repo. This function should be 
-  /// called once in the application before using 
-  /// any of the other functions of [UserRepo]. 
+  /// Initialize User Repo. This function should be
+  /// called once in the application before using
+  /// any of the other functions of [UserRepo].
   /// Preferrably in the Splash Screen.
   Future<void> initUserRepo() async {
     try {
@@ -77,6 +77,36 @@ class UserRepo {
       throw const CustomException(
         message: 'Failed to get token from local storage.',
       );
+    }
+  }
+
+  /// Deletes token from local storage
+  Future<bool> deleteTokenFromLocalStorage() async {
+    if (_userBox == null) {
+      throw const CustomException(message: 'User box is null.');
+    }
+
+    try {
+      await _userBox!.delete('token');
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Deletes user from local storage
+  Future<bool> deleteUserFromLocalStorage() async {
+    if (_userBox == null) {
+      throw const CustomException(message: 'User box is null.');
+    }
+
+    try {
+      await _userBox!.delete('current_user');
+
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }

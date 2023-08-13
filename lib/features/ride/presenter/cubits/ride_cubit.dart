@@ -9,7 +9,7 @@ import 'package:saffar_app/features/ride/domain/usecases/get_ride_route_points_u
 
 import '../../../../core/models/address.dart';
 import '../../../../core/models/driver.dart';
-import '../../../../core/models/user.dart';
+import '../../../user/data/models/user.dart';
 
 part 'ride_state.dart';
 

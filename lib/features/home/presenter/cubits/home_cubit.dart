@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:saffar_app/core/cubits/user_cubit.dart';
+import 'package:saffar_app/features/user/presenter/cubits/user_cubit.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/usecases/init_rides_repo_usecase.dart';
 import 'package:saffar_app/core/utils/snackbar.dart';

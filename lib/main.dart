@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/cubits/previous_rides_cubit.dart';
-import 'package:saffar_app/core/cubits/user_cubit.dart';
+import 'package:saffar_app/features/user/presenter/cubits/user_cubit.dart';
 import 'package:saffar_app/core/palette.dart';
 import 'package:saffar_app/core/router.dart';
 import 'package:saffar_app/core/service_locator.dart';

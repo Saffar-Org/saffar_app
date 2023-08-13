@@ -1,5 +1,5 @@
 import 'package:saffar_app/core/models/ride.dart';
-import 'package:saffar_app/core/models/user.dart';
+import 'package:saffar_app/features/user/data/models/user.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/address.dart';

@@ -5,7 +5,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:saffar_app/features/location/data/repositories/location_repo.dart';
 import 'package:saffar_app/features/payment/data/repositories/razorpay_repo.dart';
 import 'package:saffar_app/features/ride/data/repositories/ride_repo.dart';
-import 'package:saffar_app/core/repositories/user_repo.dart';
+import 'package:saffar_app/features/user/data/repositories/user_repo.dart';
 import 'package:saffar_app/core/services/validator_service.dart';
 import 'package:saffar_app/features/authentication/data/repositories/auth_repo.dart';
 import 'package:saffar_app/features/search_places_and_get_route/data/repositories/map_route_repo.dart';

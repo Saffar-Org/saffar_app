@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:saffar_app/core/cubits/user_cubit.dart';
+import 'package:saffar_app/features/user/presenter/cubits/user_cubit.dart';
 import 'package:saffar_app/core/usecases/create_ride_usecase.dart';
 import 'package:saffar_app/features/payment/domain/usecases/get_total_ride_price_usecase.dart';
 import 'package:latlong2/latlong.dart';
@@ -10,7 +10,7 @@ import 'package:saffar_app/features/ride/domain/usecases/add_ride_usecase.dart';
 import '../../../../core/models/address.dart';
 import '../../../../core/models/driver.dart';
 import '../../../../core/models/ride.dart';
-import '../../../../core/models/user.dart';
+import '../../../user/data/models/user.dart';
 
 part 'payment_state.dart';
 

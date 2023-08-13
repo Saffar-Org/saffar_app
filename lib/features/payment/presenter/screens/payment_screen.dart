@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'package:saffar_app/core/cubits/user_cubit.dart';
+import 'package:saffar_app/features/user/presenter/cubits/user_cubit.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/models/driver.dart';
 import 'package:saffar_app/core/service_locator.dart';

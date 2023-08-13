@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:saffar_app/core/cubits/user_cubit.dart';
-import 'package:saffar_app/core/usecases/get_token_from_local_storage_usecase.dart';
+import 'package:saffar_app/features/user/presenter/cubits/user_cubit.dart';
+import 'package:saffar_app/features/user/domain/usecases/get_token_from_local_storage_usecase.dart';
 import 'package:saffar_app/core/utils/snackbar.dart';
 import 'package:saffar_app/features/authentication/domain/usecases/sign_in_and_save_user_info_in_local_storage_usecase.dart';
 import 'package:saffar_app/features/authentication/domain/usecases/sign_up_and_save_user_info_in_local_storage_usecase.dart';

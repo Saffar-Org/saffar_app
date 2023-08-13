@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:saffar_app/core/constants/nums.dart';
 import 'package:saffar_app/core/constants/strings.dart';
 import 'package:saffar_app/core/cubits/previous_rides_cubit.dart';
-import 'package:saffar_app/core/cubits/user_cubit.dart';
+import 'package:saffar_app/features/user/presenter/cubits/user_cubit.dart';
 import 'package:saffar_app/core/models/address.dart';
 import 'package:saffar_app/core/widgets/address_widget.dart';
 import 'package:saffar_app/features/home/presenter/cubits/home_cubit.dart';
@@ -17,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   late final HomeCubit _homeCubit;
 
   @override
@@ -32,6 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final MediaQueryData mediaQueryData = MediaQuery.of(context);
+
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
@@ -49,6 +53,87 @@ class _HomeScreenState extends State<HomeScreen> {
               return Stack(
                 children: [
                   Scaffold(
+                    key: _scaffoldKey,
+                    drawer: Drawer(
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(height: mediaQueryData.padding.top + 32),
+                          Container(
+                            width: 160,
+                            height: 160,
+                            decoration: BoxDecoration(
+                              color: colorScheme.primary.withOpacity(.4),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                width: 2,
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(40),
+                              ),
+                              child: userImageUrl != null
+                                  ? Image.network(
+                                      userImageUrl,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(
+                                      Icons.person,
+                                      size: 64,
+                                      color: colorScheme.onPrimary,
+                                    ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            userState.currentUser!.name,
+                            style: textTheme.bodyText1?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            userState.currentUser!.phone,
+                            style: textTheme.bodyText1,
+                          ),
+                          const SizedBox(height: 24),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                context
+                                    .read<UserCubit>()
+                                    .deleteCurrentUserFromLocalStorageAndEmitCurrentUser(
+                                        context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                textStyle: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 18),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'Logout',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     body: Column(
                       children: [
                         Container(
@@ -98,7 +183,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                   // User image
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      _scaffoldKey.currentState!.openDrawer();
+                                    },
                                     child: Container(
                                       width: 40,
                                       height: 40,
