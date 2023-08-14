@@ -229,13 +229,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                     final Address? currentAddress =
                                         await _homeCubit.getCurrentAddress();
 
-                                    Navigator.pushNamed(
+                                    await Navigator.pushNamed(
                                       context,
                                       ViewMapScreen.routeName,
                                       arguments: ViewMapScreenArguments(
                                         initialPickupAddress: currentAddress,
                                       ),
                                     );
+
+                                    context
+                                        .read<PreviousRidesCubit>()
+                                        .getListOfPreviousRidesAndEmit();
                                   }
                                 },
                                 child: Container(
@@ -445,8 +449,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             .destinationAddress;
 
                                                         return GestureDetector(
-                                                          onTap: () {
-                                                            Navigator.pushNamed(
+                                                          onTap: () async {
+                                                            await Navigator
+                                                                .pushNamed(
                                                               context,
                                                               ViewMapScreen
                                                                   .routeName,
@@ -456,6 +461,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     address,
                                                               ),
                                                             );
+
+                                                            context
+                                                                .read<
+                                                                    PreviousRidesCubit>()
+                                                                .getListOfPreviousRidesAndEmit();
                                                           },
                                                           child: AddressWidget(
                                                             address: address,
