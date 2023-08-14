@@ -54,7 +54,7 @@ class AuthCubit extends Cubit<AuthState> {
   /// user and token and 
   /// shows failure message if sign in fails
   void signInGetUserAndTokenAndEmitThem(BuildContext context, String phone, String password) async {
-    emit(const AuthState(loading: true));
+    emit(state.copyWith(loading: true));
 
     final result = await _signInAndSaveUserInLocalStorageUsecase.call(
       phone,
@@ -74,7 +74,7 @@ class AuthCubit extends Cubit<AuthState> {
       },
     );
 
-    emit(const AuthState());
+    emit(state.copyWith(loading: false));
   }
 
   /// Signs up user and gets user and token emits 
@@ -86,7 +86,7 @@ class AuthCubit extends Cubit<AuthState> {
     String phone,
     String password,
   ) async {
-    emit(const AuthState(loading: true));
+    emit(state.copyWith(loading: true));
 
     final result = await _signUpAndSaveUserInLocalStorageUsecase.call(
       name,
@@ -107,6 +107,12 @@ class AuthCubit extends Cubit<AuthState> {
       },
     );
 
-    emit(const AuthState());
+    emit(state.copyWith(loading: false));
+  }
+
+  /// If in sign in screen to go to sign up screen and 
+  /// vice versa
+  void toggleAuthScreen() {
+    emit(state.copyWith(signIn: !state.signIn));
   }
 }

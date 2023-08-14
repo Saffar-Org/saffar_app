@@ -9,8 +9,8 @@ import 'package:saffar_app/core/service_locator.dart';
 class RideRepo {
   final Dio _dio = sl<Dio>();
 
-  late final String? token;
-  late final String? userId;
+  String? token;
+  String? userId;
 
   /// Initialized Rides Repo. This must be called once
   /// in the application before the other functions are

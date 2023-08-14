@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:saffar_app/features/authentication/presenter/auth_wrapper.dart';
 import 'package:saffar_app/features/user/presenter/cubits/user_cubit.dart';
-import 'package:saffar_app/features/authentication/presenter/view/sign_in_screen.dart';
 import 'package:saffar_app/features/home/presenter/screens/home.dart';
 
 class Wrapper extends StatelessWidget {
@@ -15,7 +15,7 @@ class Wrapper extends StatelessWidget {
       builder: (context, state) {
         return state.isLoggedIn
             ? const HomeScreen()
-            : const SignInScreen();
+            : const AuthWrapper();
       },
     );
   }

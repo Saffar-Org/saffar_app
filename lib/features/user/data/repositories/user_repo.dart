@@ -4,7 +4,7 @@ import 'package:saffar_app/core/service_locator.dart';
 
 class UserRepo {
   final HiveInterface _hive = sl<HiveInterface>();
-  late final Box? _userBox;
+  Box? _userBox;
 
   /// Initialize User Repo. This function should be
   /// called once in the application before using
