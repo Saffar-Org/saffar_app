@@ -17,7 +17,7 @@ The app uses Flutter as it's frontend framework, TomTom as it's map service, Hiv
     * **presenter**: UI and state code in present here
    
 ## TomTom maps service
-TomTom maps service is a good alternative for Google Maps for testing your apps with maps. It contains all the major services that are needed for most of the apps. It doesn't have a dedicated SDK for flutter as of now i.e. when this README.md file is being written. (If in future a TomTom SDK for flutter is available please raise an issue to correct this README.md file). So, for now we have to work with APIs provided bt TomTom and using [flutter_map](https://pub.dev/packages/flutter_map).
+TomTom maps service is a good alternative for Google Maps for testing your apps with maps, also it has a free tier. It contains all the major services that are needed for most of the apps. It doesn't have a dedicated SDK for flutter as of now i.e. when this README.md file is being written. (If in future a TomTom SDK for flutter is available please raise an issue to correct this README.md file). So, for now we have to work with APIs provided bt TomTom and using [flutter_map](https://pub.dev/packages/flutter_map). I will be writing a tutorial on how to use TomTom map service in Flutter, so stay tuned.
 
 ## Other
 If you are interested to see examples of real world app code then do follow. It is always nice to connect with fellow developers.
