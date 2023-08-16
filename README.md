@@ -4,7 +4,7 @@
 ## What is Saffar?
 A Test Taxi booking application. 
 
-Saffar is an open source project to showcase the use of Flutter with a Node JS backend (Saffar backend repo link [here](https://github.com/Saffar-Org/saffar_backend)) along with TomTom maps service (Google Maps alternative. Link [here](https://www.tomtom.com/products/maps/)).
+Saffar is an open source project to showcase the use of Flutter with a Node JS backend (Saffar backend repository link [here](https://github.com/Saffar-Org/saffar_backend)) along with TomTom maps service (Google Maps alternative. Link [here](https://www.tomtom.com/products/maps/)).
 
 The app uses Flutter as it's frontend framework, TomTom as it's map service, Hive as it's local storage and Razorpay as it's payment gateway. Clean architecture (Clean architecture lectures link [here](https://www.youtube.com/watch?v=dc3B_mMrZ-Q)) is used to keep the app modular and it's UI logic, Business logic and Data logic separate. It uses Bloc and Cubits state management which handles state in a clean and optimal manner. 
 
